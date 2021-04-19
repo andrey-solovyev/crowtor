@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Entity
@@ -20,12 +21,17 @@ public class Twit {
     @NotBlank
     private String textTwit;
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
-    private User user;
+    @JoinColumn(name="person_id", nullable=false)
+    private Person person;
     @Column(insertable = true, updatable = false)
     private LocalDateTime created;
     @PrePersist
     void onCreate() {
         this.setCreated(LocalDateTime.now());
     }
+    @ManyToMany(mappedBy = "twits")
+    private Set<Tag> tags;
+    @ManyToMany(mappedBy = "likes")
+    private Set<Person> personLikes;
+
 }

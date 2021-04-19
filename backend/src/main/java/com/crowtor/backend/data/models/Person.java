@@ -1,6 +1,5 @@
 package com.crowtor.backend.data.models;
 
-import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-public class User {
+public class Person {
     @Id
     @GeneratedValue
     @Column(insertable = false, updatable = false)
@@ -30,6 +29,14 @@ public class User {
     @NotBlank
     private String nickName;
     private Boolean isDeleted=false;
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="user")
+    private Boolean isPremium = false;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="person")
     private Set<Twit> twits;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="like_twit",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "twit_id")
+    )
+    private Set<Twit> likes;
 }
