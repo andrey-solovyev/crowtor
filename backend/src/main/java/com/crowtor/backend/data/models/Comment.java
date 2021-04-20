@@ -3,12 +3,10 @@ package com.crowtor.backend.data.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Data
 @Entity
@@ -21,5 +19,7 @@ public class Comment {
     @NotNull
     @NotBlank
     private String textComment;
-
+    @ManyToOne
+    @JoinColumn(name="person_id", nullable=false)
+    private Person person;
 }

@@ -39,4 +39,6 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "twit_id")
     )
     private Set<Twit> likes;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="person")
+    private Set<Comment> comments;
 }
