@@ -1,5 +1,6 @@
 package com.crowtor.backend.data.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,11 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name="person_id", nullable=false)
     private Person person;
+    @ManyToOne
+    @JoinColumn(name="twit_id", nullable=false)
+    private Twit twit;
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "id")
+    @JsonBackReference
+    private Comment parentComment;
 }

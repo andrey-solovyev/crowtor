@@ -23,6 +23,7 @@ public class Twit {
     @ManyToOne
     @JoinColumn(name="person_id", nullable=false)
     private Person person;
+    private boolean isPremium=false;
     @Column(insertable = true, updatable = false)
     private LocalDateTime created;
     @PrePersist
@@ -33,5 +34,7 @@ public class Twit {
     private Set<Tag> tags;
     @ManyToMany(mappedBy = "likes")
     private Set<Person> personLikes;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="twit")
+    private Set<Comment> comments;
 
 }
