@@ -22,8 +22,16 @@ public class PersonToPersonDtoObjectMapper extends BaseObjectMapper<Person, Pers
     @Override
     public PersonDto convert(Person obj) {
         var personDto =new PersonDto();
-        personDto
-        return null;
+        personDto.setFirstName(obj.getFirstName());
+        personDto.setLastName(obj.getLastName());
+        personDto.setBirthday(obj.getBirthday());
+        personDto.setNickName(obj.getNickName());
+        personDto.setIsPremium(obj.getIsPremium());
+        personDto.setIsDeleted(obj.getIsDeleted());
+        personDto.setTwits(obj.getTwits());
+        personDto.setSubscribers(obj.getSubscribers());
+        personDto.setSubscription(obj.getSubscription());
+        return personDto;
     }
 
     @Override
