@@ -30,11 +30,11 @@ public class Twitt {
     void onCreate() {
         this.setCreated(LocalDateTime.now());
     }
-    @ManyToMany(mappedBy = "twits")
+    @ManyToMany(mappedBy = "twitts")
     private Set<Tag> tags;
     @ManyToMany(mappedBy = "likes")
     private Set<Person> personLikes;
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="twit")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="twitt")
     private Set<Comment> comments;
 
 }

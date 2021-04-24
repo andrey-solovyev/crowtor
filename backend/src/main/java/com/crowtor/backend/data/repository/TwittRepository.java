@@ -13,5 +13,5 @@ public interface TwittRepository extends JpaRepository<Twitt,Long> {
     List<TwittFeedDto> findAllDto();
     @Query("select t.id,t.textTwit,t.isPremium,Twitt.personLikes.size,t.created from Twitt t where t.person.id in (select p.subscription.id from Person p where p.id=:personId) order by t.created")
     List<TwittFeedDto> findAllBySubscription(Long personId);
-эластик серч
+//эластик серч
 }
