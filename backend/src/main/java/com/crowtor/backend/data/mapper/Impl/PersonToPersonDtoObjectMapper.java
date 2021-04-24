@@ -5,8 +5,6 @@ import com.crowtor.backend.data.mapper.BaseObjectMapper;
 import com.crowtor.backend.data.models.Person;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class PersonToPersonDtoObjectMapper extends BaseObjectMapper<Person, PersonDto> {
 
@@ -28,7 +26,7 @@ public class PersonToPersonDtoObjectMapper extends BaseObjectMapper<Person, Pers
         personDto.setNickName(obj.getNickName());
         personDto.setIsPremium(obj.getIsPremium());
         personDto.setIsDeleted(obj.getIsDeleted());
-        personDto.setTwits(obj.getTwits());
+        personDto.setTwitts(obj.getTwitts());
         personDto.setSubscribers(obj.getSubscribers());
         personDto.setSubscription(obj.getSubscription());
         return personDto;

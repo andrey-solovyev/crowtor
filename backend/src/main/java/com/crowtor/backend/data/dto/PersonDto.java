@@ -2,10 +2,9 @@ package com.crowtor.backend.data.dto;
 
 import com.crowtor.backend.data.models.Comment;
 import com.crowtor.backend.data.models.Person;
-import com.crowtor.backend.data.models.Twit;
+import com.crowtor.backend.data.models.Twitt;
 import lombok.Data;
 
-import javax.persistence.*;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,9 +23,9 @@ public class PersonDto {
 
     private Boolean isPremium = false;
 
-    private Set<Twit> twits;
+    private Set<Twitt> twitts;
 
-    private Set<Twit> likes;
+    private Set<Twitt> likes;
 
     private Set<Comment> comments;
 

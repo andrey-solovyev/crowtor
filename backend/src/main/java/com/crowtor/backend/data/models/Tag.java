@@ -24,5 +24,5 @@ public class Tag {
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "twit_id")
     )
-    private Set<Twit> twits;
+    private Set<Twitt> twitts;
 }

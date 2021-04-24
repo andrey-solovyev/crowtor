@@ -1,6 +1,5 @@
 package com.crowtor.backend.data.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,14 +32,14 @@ public class Person {
     private Boolean isDeleted = false;
     private Boolean isPremium = false;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
-    private Set<Twit> twits;
+    private Set<Twitt> twitts;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "like_twit",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "twit_id")
     )
-    private Set<Twit> likes;
+    private Set<Twitt> likes;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
     private Set<Comment> comments;
     @ManyToMany

@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @Entity
 @NoArgsConstructor
-public class Twit {
+public class Twitt {
     @Id
     @GeneratedValue
     @Column(insertable = false, updatable = false)

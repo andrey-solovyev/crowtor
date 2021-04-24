@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Data
 @Entity
@@ -25,7 +24,7 @@ public class Comment {
     private Person person;
     @ManyToOne
     @JoinColumn(name="twit_id", nullable=false)
-    private Twit twit;
+    private Twitt twitt;
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     @JsonBackReference
