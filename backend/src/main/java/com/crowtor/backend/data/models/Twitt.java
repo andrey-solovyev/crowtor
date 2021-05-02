@@ -34,6 +34,8 @@ public class Twitt {
     private Set<Tag> tags;
     @ManyToMany(mappedBy = "likes")
     private Set<Person> personLikes;
+    @ManyToMany(mappedBy = "dislikes")
+    private Set<Person> personDisLikes;
     @OneToMany(fetch = FetchType.LAZY,mappedBy="twitt")
     private Set<Comment> comments;
 

@@ -14,10 +14,15 @@ import java.util.Optional;
 
 @Service
 public class TwittService {
-    @Autowired
     private TwittRepository twittRepository;
-    @Autowired
+
     private PersonRepository personRepository;
+
+    public TwittService(TwittRepository twittRepository, PersonRepository personRepository) {
+        this.twittRepository = twittRepository;
+        this.personRepository = personRepository;
+    }
+
     public void createTwitt(CreateTwittDto createTwittDto) throws EntityNotFoundException {
         var twit=new Twitt();
         twit.setTextTwit(createTwittDto.getTextTwit());
@@ -27,5 +32,19 @@ public class TwittService {
         twit.setPremium(createTwittDto.isPremium());
         twit.setTags(createTwittDto.getTagSet());
         twittRepository.save(twit);
+    }
+    public void likeTwitt(long currentUserId,long twittId) throws EntityNotFoundException {
+        var twitt=twittRepository.findById(twittId);
+        var person=personRepository.findById(currentUserId);
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId,Twitt.class.toString());
+        if (!person.isPresent()) throw new EntityNotFoundException(currentUserId,"person");
+        twitt.get().getPersonLikes().add(person.get());
+    }
+    public void dislikeTwitt(long currentUserId,long twittId) throws EntityNotFoundException {
+        var twitt=twittRepository.findById(twittId);
+        var person=personRepository.findById(currentUserId);
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId,Twitt.class.toString());
+        if (!person.isPresent()) throw new EntityNotFoundException(currentUserId,"person");
+        twitt.get().getPersonLikes().remove(person.get());
     }
 }
