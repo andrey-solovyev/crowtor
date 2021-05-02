@@ -1,4 +1,4 @@
-package com.crowtor.backend.data.dto;
+package com.crowtor.backend.data.dto.securutyDto;
 
 import lombok.Data;
 
@@ -12,5 +12,7 @@ public class RegistPersonDto {
     private String lastName;
 
     private String nickName;
+
+    private String password;
 
 }

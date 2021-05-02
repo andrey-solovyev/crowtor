@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,6 +30,7 @@ public class Person {
     @NotNull
     @NotBlank
     private String nickName;
+    private String password;
     private Boolean isDeleted = false;
     private Boolean isPremium = false;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
@@ -40,6 +42,13 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "twit_id")
     )
     private Set<Twitt> likes;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "dislike_twit",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "twit_id")
+    )
+    private Set<Twitt> dislikes;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
     private Set<Comment> comments;
     @ManyToMany
@@ -56,5 +65,13 @@ public class Person {
             inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
     )
     private Set<Person> subscribers = new HashSet<>();
+
+    @ManyToMany()
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private List<Role> roles;
 
 }

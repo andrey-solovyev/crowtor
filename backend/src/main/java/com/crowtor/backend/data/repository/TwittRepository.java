@@ -8,10 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
+
 public interface TwittRepository extends JpaRepository<Twitt,Long> {
-    @Query("select t.id,t.textTwit,t.isPremium,Twitt.personLikes.size,t.created from Twitt t order by t.created")
+    @Query("select t.id,t.textTwit,t.isPremium,t.personLikes.size,t.created from Twitt t order by t.created")
     List<TwittFeedDto> findAllDto();
-    @Query("select t.id,t.textTwit,t.isPremium,Twitt.personLikes.size,t.created from Twitt t where t.person.id in (select p.subscription.id from Person p where p.id=:personId) order by t.created")
-    List<TwittFeedDto> findAllBySubscription(Long personId);
+//    @Query("select t.id,t.textTwit,t.isPremium,Twitt.personLikes.size,t.created from Twitt t where t.person.id in (select p.subscription.id from Person p where p.id=:personId) order by t.created")
+//    List<TwittFeedDto> findAllBySubscription(Long personId);
 //эластик серч
 }
