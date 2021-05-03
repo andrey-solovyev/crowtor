@@ -92,6 +92,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
 
+
+
+
+                Padding(
+                  child: TextFormField(
+                    controller: lastNameController,
+                    keyboardType: TextInputType.datetime,
+                    decoration: InputDecoration(
+                        labelText: "Дата рождения", hintText: "ДД.ММ.ГГГГ"),
+                    validator: (String value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введите дату рождения';
+                      }
+                      return null;
+                    },
+                      // onTap: (){
+                      //   FocusScope.of(context).requestFocus(new FocusNode());
+                      // },
+                  ),
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                ),
+
+
+
+
+
                 Padding(
                   child: TextFormField(
                     controller: passwordController,
