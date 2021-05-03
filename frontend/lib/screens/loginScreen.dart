@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:crowtor/api/apiService.dart';
+import 'package:crowtor/components/progressHUD.dart';
+import 'package:crowtor/model/loginModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -16,10 +19,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  LoginRequestModel loginRequestModel;
+  bool isApiCallProcess = false;
 
-  Future<http.Response> response;
+  @override
+  void initState() {
+    super.initState();
+    loginRequestModel = new LoginRequestModel();
+  }
 
-  void setErrorMessage(String text) {
+  void _setErrorMessage(String text) {
     setState(() {
       errorMessage = text;
     });
@@ -27,6 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return ProgressHUD(child: _uiSetup(context), inAsyncCall: isApiCallProcess);
+  }
+
+  Widget _uiSetup(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Crowtor"),
@@ -92,19 +105,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     child: Text("Войти"),
-                    onPressed: () => {
-                      if (_formKey.currentState.validate())
-                        {
-                          setErrorMessage("Пока вход не реализованн"),                           response = http.post(
-                            Uri.https('127.0.0.1:5000', '/api/login'),
-                            headers: <String, String>{
-                              'Content-Type': 'application/json; charset=UTF-8',
-                            },
-                            body: jsonEncode(<String, String>{
-                              'title': "TITLE1",
-                            }),
-                          )
-                        }
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          isApiCallProcess = true;
+                        });
+
+                        loginRequestModel.password = passwordController.text;
+                        loginRequestModel.email = emailController.text;
+
+                        APIService apiService = new APIService();
+                        apiService.login(loginRequestModel).then((value) {
+                          setState(() {
+                            isApiCallProcess = false;
+                          });
+
+                          if (value.token.isNotEmpty) {
+                            _setErrorMessage(value.token + "\nADD REAL AUTH");
+                          } else {
+                            if (value.error.isNotEmpty) {
+                              _setErrorMessage(value.error);
+                            }
+                          }
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(),
                   )),
