@@ -30,7 +30,8 @@ class RegistrationResponseModel {
   factory RegistrationResponseModel.fromJson(Map<String, dynamic> json) {
     return RegistrationResponseModel(
         token: json['token'] != null ? json['token'] : "",
-        id: json['id'] != null ? json['id'] : "",
-        error: json['error'] != null ? json['error'] : "");
+        id: json['id'] != null ?  json['id'].toString() : "",
+        error: json['error'] != null ? json['error'] : ""
+    );
   }
 }

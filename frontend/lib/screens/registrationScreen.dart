@@ -1,4 +1,6 @@
+import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/components/progressHUD.dart';
+import 'package:crowtor/model/registrationModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,8 +19,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController bDayController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController repeatPasswordController = TextEditingController();
-
+  RegistrationRequestModel registrationRequestModel;
   String errorMessage = "";
+
+  @override
+  void initState() {
+    super.initState();
+    registrationRequestModel = new RegistrationRequestModel();
+  }
 
   int _calculateAge(DateTime birthDate) {
     DateTime currentDate = DateTime.now();
@@ -35,6 +43,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       }
     }
     return age;
+  }
+
+  _setErrorMessage(String text){
+    setState(() {
+      errorMessage = text;
+    });
   }
 
   @override
@@ -187,19 +201,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             setState(() {
-                              // isApiCallProcess = true;
+                              isApiCallProcess = true;
                             });
 
-                            print(emailController.text +
-                                " " +
-                                firstNameController.text +
-                                " " +
-                                lastNameController.text +
-                                " " +
-                                passwordController.text +
-                                " " +
-                                repeatPasswordController.text +
-                                " ");
+                            registrationRequestModel.email = emailController.text;
+                            registrationRequestModel.firstName = firstNameController.text;
+                            registrationRequestModel.lastName = lastNameController.text;
+                            registrationRequestModel.bDay = bDayController.text;
+                            registrationRequestModel.password = passwordController.text;
+
+                            print(registrationRequestModel.toJson());
+
+                            APIService apiService = new APIService();
+                            apiService.register(registrationRequestModel).then((value) {
+                              setState(() {
+                                isApiCallProcess = false;
+                              });
+
+                              if (value.token.isNotEmpty) {
+                                _setErrorMessage(value.token + "\nADD REAL REG");
+                              } else {
+                                if (value.error.isNotEmpty) {
+                                  _setErrorMessage(value.error);
+                                }
+                              }
+                            });
 
                             // loginRequestModel.password = passwordController.text;
                             // loginRequestModel.email = emailController.text;
