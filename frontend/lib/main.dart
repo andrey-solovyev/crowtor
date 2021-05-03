@@ -1,4 +1,5 @@
 import 'package:crowtor/screens/loginScreen.dart';
+import 'package:crowtor/screens/registrationScreen.dart';
 import 'package:crowtor/screens/startScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MyHomePage(title: 'Crowtor'),
         '/login': (context) => LoginScreen(),
+        '/registration': (context) => RegistrationScreen(),
       },
     );
   }
