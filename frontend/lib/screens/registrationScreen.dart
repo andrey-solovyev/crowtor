@@ -8,22 +8,38 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-
   bool isApiCallProcess = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  TextEditingController bDayController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController repeatPasswordController = TextEditingController();
 
-
   String errorMessage = "";
+
+  int _calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  ProgressHUD(child: _uiSetup(context), inAsyncCall: isApiCallProcess);
+    return ProgressHUD(child: _uiSetup(context), inAsyncCall: isApiCallProcess);
   }
 
   Widget _uiSetup(BuildContext context) {
@@ -38,7 +54,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               shrinkWrap: true,
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 Padding(
                   child: TextFormField(
                     controller: emailController,
@@ -59,13 +74,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
-
                 Padding(
                   child: TextFormField(
                     controller: firstNameController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                        labelText: "Имя", hintText: "Введите имя"),
+                    decoration:
+                    InputDecoration(labelText: "Имя", hintText: "Введите имя"),
                     validator: (String value) {
                       if (value == null || value.isEmpty) {
                         return 'Введите имя';
@@ -75,7 +89,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
-
                 Padding(
                   child: TextFormField(
                     controller: lastNameController,
@@ -91,13 +104,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
-
-
-
-
                 Padding(
                   child: TextFormField(
-                    controller: lastNameController,
+                    controller: bDayController,
                     keyboardType: TextInputType.datetime,
                     decoration: InputDecoration(
                         labelText: "Дата рождения", hintText: "ДД.ММ.ГГГГ"),
@@ -105,19 +114,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Введите дату рождения';
                       }
+                      if (!RegExp(
+                          r"^(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})")
+                          .hasMatch(value)) {
+                        return "Введите корректную дату. Пример: 21.05.1999";
+                      }
+                      var dateList = value.split('.').map((e) => int.parse(e));
+                      DateTime dt = DateTime.utc(dateList.elementAt(2),dateList.elementAt(1),dateList.elementAt(0));
+                      int age = _calculateAge(dt);
+                      if (age < 18) {
+                        return "Возраст пользователя должен быть больше 18 лет.";
+                      }
                       return null;
                     },
-                      // onTap: (){
-                      //   FocusScope.of(context).requestFocus(new FocusNode());
-                      // },
                   ),
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
-
-
-
-
-
                 Padding(
                   child: TextFormField(
                     controller: passwordController,
@@ -134,24 +146,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
-
                 Padding(
                   child: TextFormField(
                     controller: repeatPasswordController,
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
                     decoration: InputDecoration(
-                        labelText: "Повторите пароль", hintText: "Введите пароль"),
+                        labelText: "Повторите пароль",
+                        hintText: "Введите пароль"),
                     validator: (String value) {
                       if (value == null || value.isEmpty) {
                         return 'Введите пароль';
+                      }
+                      if (value != passwordController.text){
+                        return "Пароли не совпадают";
                       }
                       return null;
                     },
                   ),
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 ),
-
                 Padding(
                   padding: errorMessage.isEmpty
                       ? EdgeInsets.fromLTRB(20, 0, 20, 0)
@@ -165,7 +179,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                   ),
                 ),
-
                 Padding(
                   child: SizedBox(
                       width: double.infinity,
@@ -173,11 +186,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         child: Text("Зарегистрироваться"),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
-                        setState(() {
-                              isApiCallProcess = true;
+                            setState(() {
+                              // isApiCallProcess = true;
                             });
 
-                            print(emailController.text + " " +firstNameController.text + " " +lastNameController.text + " " +passwordController.text + " " +repeatPasswordController.text + " ");
+                            print(emailController.text +
+                                " " +
+                                firstNameController.text +
+                                " " +
+                                lastNameController.text +
+                                " " +
+                                passwordController.text +
+                                " " +
+                                repeatPasswordController.text +
+                                " ");
 
                             // loginRequestModel.password = passwordController.text;
                             // loginRequestModel.email = emailController.text;
@@ -208,7 +230,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       child: ElevatedButton(
                         child: Text("Войти"),
                         onPressed: () =>
-                            Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false),
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/login', (route) => false),
                         style: ElevatedButton.styleFrom(),
                       )),
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
