@@ -18,8 +18,8 @@ class _StartScreenState extends State<StartScreen> {
     return Scaffold(
         appBar: AppBar(),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: ListView(
+            shrinkWrap: true,
             children: [
               Padding(
                   padding: widget.isFinalScreen
