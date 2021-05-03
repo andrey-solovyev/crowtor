@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.amber,
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return  StartScreen(text: 'Добро пожаловать в наше приложение!');
+                  return  StartScreen();
                 }));
               },
             )

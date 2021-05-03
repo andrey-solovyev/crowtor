@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class StartScreen extends StatefulWidget {
-  StartScreen({Key key, this.text = "", this.isFinalScreen = false})
+  StartScreen({Key key, this.text = "Добро пожаловать в наше приложение!", this.isFinalScreen = false})
       : super(key: key);
 
   final String text;
@@ -44,7 +44,7 @@ class _StartScreenState extends State<StartScreen> {
                                 ? Text("Начать")
                                 : Text("Далее"),
                             onPressed: widget.isFinalScreen
-                                ? () => Navigator.pushNamed(context, '/login')
+                                ? () => Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false)
                                 : () {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) {
@@ -66,7 +66,8 @@ class _StartScreenState extends State<StartScreen> {
                           child: OutlinedButton(
                             child: Text("Пропустить"),
                             onPressed: () =>
-                                Navigator.pushNamed(context, '/login'),
+                                // Navigator.pushNamed(context, '/login'),
+                              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false),
                             style: OutlinedButton.styleFrom(
                               side:
                                   BorderSide(width: 2, color: Colors.redAccent),
