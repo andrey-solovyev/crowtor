@@ -17,6 +17,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController bDayController = TextEditingController();
+  TextEditingController nickNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController repeatPasswordController = TextEditingController();
   RegistrationRequestModel registrationRequestModel;
@@ -90,8 +91,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 Padding(
                   child: TextFormField(
+                    controller: nickNameController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        labelText: "Никнейм", hintText: "Введите никнейм"),
+                    validator: (String value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Введите никнейм';
+                      }
+                      return null;
+                    },
+                  ),
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                ),
+                Padding(
+                  child: TextFormField(
                     controller: firstNameController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.text,
                     decoration:
                     InputDecoration(labelText: "Имя", hintText: "Введите имя"),
                     validator: (String value) {
@@ -106,7 +122,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 Padding(
                   child: TextFormField(
                     controller: lastNameController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         labelText: "Фамилия", hintText: "Введите фамилию"),
                     validator: (String value) {

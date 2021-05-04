@@ -1,9 +1,10 @@
 class RegistrationRequestModel {
   RegistrationRequestModel(
-      {this.email, this.password, this.firstName, this.lastName, this.bDay});
+      {this.email, this.password, this.firstName, this.lastName, this.bDay, this.nickName});
 
   String email;
   String password;
+  String nickName;
   String firstName;
   String lastName;
   String bDay;
@@ -12,6 +13,7 @@ class RegistrationRequestModel {
     Map<String, dynamic> map = {
       "email": email.trim(),
       "password": password.trim(),
+      "nickName": nickName.trim(),
       "firstName": firstName.trim(),
       "lastName": lastName.trim(),
       "bDay": bDay.trim()
