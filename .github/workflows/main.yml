@@ -1,0 +1,31 @@
+name: Release workflow backend
+
+on:
+  push:
+    branches: main
+  
+jobs:
+  build:
+    env:
+      working-directory: ./backend
+    runs-on: ubuntu-latest
+    environment: search-gift
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        ref: master
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+    - name: Checkout master branch
+      run: git checkout master
+    - name: Build with Maven
+      run: mvn --batch-mode --update-snapshots verify
+    - name: Deploy to Heroku (Backend)
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: ${{ secrets.HEROKU_BACKEND_APP_NAME }}
+        heroku_email: ${{ secrets.HEROKU_EMAIL }}
+        usedocker: true
