@@ -21,7 +21,7 @@ jobs:
     - name: Checkout master branch
       run: git checkout main
     - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots verify
+      run: mvn verify
     - name: Deploy to Heroku (Backend)
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
