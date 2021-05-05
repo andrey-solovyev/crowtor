@@ -1,4 +1,4 @@
-package com.crowtor.backend.data.mapper;
+package com.crowtor.backend.data.mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;

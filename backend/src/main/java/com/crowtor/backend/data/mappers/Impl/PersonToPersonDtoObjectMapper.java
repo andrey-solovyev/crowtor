@@ -1,7 +1,7 @@
-package com.crowtor.backend.data.mapper.Impl;
+package com.crowtor.backend.data.mappers.Impl;
 
 import com.crowtor.backend.data.dto.PersonDto;
-import com.crowtor.backend.data.mapper.BaseObjectMapper;
+import com.crowtor.backend.data.mappers.BaseObjectMapper;
 import com.crowtor.backend.data.models.Person;
 import org.springframework.stereotype.Component;
 

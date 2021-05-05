@@ -40,17 +40,21 @@ public class TwittService {
         if (!twitt.isPresent()) throw new EntityNotFoundException(twittId,Twitt.class.toString());
         if (person == null) throw new EntityNotFoundException("person not found!");
         var t = twitt.get();
-        t.getPersonLikes().add(person);
+        if (person.getLikes().contains(twitt.get())) person.getLikes().remove(t);
+        else person.getLikes().add(t);
+        //t.getPersonLikes().add(person);
         //twitt.get().setPersonLikes(twitt.get().getPersonLikes().add(person));
-        twittRepository.saveAndFlush(t);
+        //twittRepository.saveAndFlush(t);
+        personRepository.save(person);
     }
     public void dislikeTwitt(String nickName,long twittId) throws EntityNotFoundException {
         var twitt=twittRepository.findById(twittId);
         var person=personRepository.findByNickName(nickName);
         if (!twitt.isPresent()) throw new EntityNotFoundException(twittId,Twitt.class.toString());
         if (person == null) throw new EntityNotFoundException("person not found!");
-        twitt.get().getPersonLikes().remove(person);
-        twittRepository.save(twitt.get());
+        if ( person.getLikes().contains(twitt.get())) person.getLikes().remove(twitt.get());
+        person.getDislikes().add(twitt.get());
+        personRepository.save(person);
     }
     public List<TwittFeedDto> findAll(){
         return twittRepository.findAllDto();
