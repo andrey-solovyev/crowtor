@@ -1,4 +1,4 @@
-package com.crowtor.backend.data.mapper;
+package com.crowtor.backend.data.mappers;
 
 import org.springframework.stereotype.Component;
 

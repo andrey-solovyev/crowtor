@@ -1,4 +1,4 @@
-package com.crowtor.backend.data.mapper;
+package com.crowtor.backend.data.mappers;
 
 public class MappingKey {
     private final Class<?> in;
