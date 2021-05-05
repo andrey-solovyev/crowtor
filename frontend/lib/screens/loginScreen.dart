@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     child: Text("Продолжить как гость"),
-                    onPressed: () => null,
+                    onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/feed', (route) => false),
                     style: ElevatedButton.styleFrom(),
                   )),
               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
