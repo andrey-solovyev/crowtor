@@ -13,6 +13,8 @@ public class RegistPersonDto {
 
     private String nickName;
 
+    private String email;
+
     private String password;
 
 }

@@ -8,6 +8,7 @@ import com.crowtor.backend.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,12 +30,17 @@ public class SecurityController {
 
     @RequestMapping(method = POST, path = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerNewUser(@RequestBody RegistPersonDto registerUserDto) {
+    public ResponseEntity registerNewUser(@RequestBody RegistPersonDto registerUserDto) {
+        if (registerUserDto == null || registerUserDto.getNickName()==null || registerUserDto.getPassword()==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         personService.createNewPerson(registerUserDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @RequestMapping(method = POST, path = "/login")
-    public AuthInfoDto loginUser(@RequestBody LoginUserDto loginUserDto) throws EntityNotFoundException {
-        var user = personService.findPersonByNickName(loginUserDto);
-        return personService.generayeTokenFromUser(user);
+    public ResponseEntity<AuthInfoDto> loginUser(@RequestBody LoginUserDto loginUserDto) throws EntityNotFoundException {
+        if (loginUserDto == null || loginUserDto.getEmail()==null || loginUserDto.getPassword()==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        var auth = personService.loginPerson(loginUserDto);
+        return auth != null
+                ? new ResponseEntity<AuthInfoDto>(auth, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 public class SecurityUser implements UserDetails {
 
-    private String userName;
+    private long id;
+    private String nickName;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -20,8 +21,7 @@ public class SecurityUser implements UserDetails {
 
     public static SecurityUser fromClaimsToCustomUserDetails(Claims claims) {
         SecurityUser userDetails = new SecurityUser();
-        userDetails.userName = claims.getSubject();
-
+        userDetails.nickName = claims.getSubject();
         var roles = claims.get("roles", String.class).split(",");
         userDetails.grantedAuthorities = Arrays.stream(roles)
                 .map(SimpleGrantedAuthority::new)
@@ -36,7 +36,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return nickName;
     }
 
     @Override

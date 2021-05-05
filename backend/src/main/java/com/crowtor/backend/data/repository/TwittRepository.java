@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 
 public interface TwittRepository extends JpaRepository<Twitt,Long> {
-    @Query("select t.id,t.textTwit,t.isPremium,t.personLikes.size,t.created from Twitt t order by t.created")
+    @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName) from Twitt t order by t.created")
     List<TwittFeedDto> findAllDto();
-//    @Query("select t.id,t.textTwit,t.isPremium,Twitt.personLikes.size,t.created from Twitt t where t.person.id in (select p.subscription.id from Person p where p.id=:personId) order by t.created")
-//    List<TwittFeedDto> findAllBySubscription(Long personId);
+    @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName) from Twitt t where t.author.id in (select p.subscription from Person p where p.id=:personId) order by t.created")
+    List<TwittFeedDto> findAllBySubscription(Long personId);
 //эластик серч
 }

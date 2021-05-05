@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -20,23 +21,50 @@ public class Twitt {
     @NotNull
     @NotBlank
     private String textTwit;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="person_id", nullable=false)
-    private Person person;
+    private Person author;
     private boolean isPremium=false;
     @Column(insertable = true, updatable = false)
     private LocalDateTime created;
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "twitts")
+    private Set<Tag> tags;
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "likes")
+    private Set<Person> personLikes;
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "dislikes")
+    private Set<Person> personDisLikes;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="twitt")
+    private Set<Comment> comments;
     @PrePersist
     void onCreate() {
         this.setCreated(LocalDateTime.now());
     }
-    @ManyToMany(mappedBy = "twitts")
-    private Set<Tag> tags;
-    @ManyToMany(mappedBy = "likes")
-    private Set<Person> personLikes;
-    @ManyToMany(mappedBy = "dislikes")
-    private Set<Person> personDisLikes;
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="twitt")
-    private Set<Comment> comments;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Twitt twitt = (Twitt) o;
+        return id == twitt.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Twitt{" +
+                "id=" + id +
+                ", textTwit='" + textTwit + '\'' +
+                ", isPremium=" + isPremium +
+                ", created=" + created +
+                ", tags=" + tags +
+                ", personLikes=" + personLikes +
+                ", personDisLikes=" + personDisLikes +
+                ", comments=" + comments +
+                '}';
+    }
 }
