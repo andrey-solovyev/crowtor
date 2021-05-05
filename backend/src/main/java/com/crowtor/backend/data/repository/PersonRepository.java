@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Repository
 @EnableJpaRepositories
-public interface PersonRepository extends JpaRepository<Person,Long> {
+public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("select p from Person p where p.nickName=:nickName")
     Person findByNickName(String nickName);
+
+    @Query("select p from Person p where p.email=:email")
+    Person findByEmail(String email);
 }

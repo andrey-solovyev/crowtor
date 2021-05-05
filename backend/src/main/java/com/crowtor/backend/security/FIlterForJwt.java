@@ -1,13 +1,18 @@
 package com.crowtor.backend.security;
 
+import com.crowtor.backend.controller.SecurityController;
 import io.jsonwebtoken.Claims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import javax.persistence.Column;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -16,9 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.springframework.util.StringUtils.hasText;
-
+@Component
 public class FIlterForJwt extends GenericFilterBean {
     private JwtSupplier jwtSupplier;
+    private static Logger logger = LoggerFactory.getLogger(JwtSupplier.class);
 
     public FIlterForJwt(JwtSupplier jwtSupplier) {
         this.jwtSupplier = jwtSupplier;
@@ -42,8 +48,8 @@ public class FIlterForJwt extends GenericFilterBean {
 
     private String getTokenFromRequest(HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (hasText(token) && token.startsWith("Test ")) {
-            return token.substring(7);
+        if (hasText(token) && token.startsWith("Bearer ")) {
+            return token.split(" ")[2];
         }
         return null;
     }

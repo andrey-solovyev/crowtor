@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtSupplier {
@@ -34,17 +35,20 @@ public class JwtSupplier {
     /**
      * генерируем токен
      */
-    public String createTokenForUser(String name, String surname, List<Role> userRoles) {
+    public String createTokenForUser(long id, String nickname, List<Role> userRoles) {
         Date exDate = Date.from(
                 LocalDate.now()
-                        .plusDays(60)
+                        .plusDays(90)
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()
         );
-
+        String rolesClaim = userRoles.stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(","));
         return Jwts.builder()
                 .setExpiration(exDate)
-                .setSubject(name)
-                .claim("surname", surname)
+                .setSubject(nickname)
+                .claim("id", id)
+                .claim("roles", rolesClaim)
                 .signWith(key)
                 .compact();
     }
@@ -54,7 +58,6 @@ public class JwtSupplier {
             jwtParser.parse(token);
             return true;
         } catch (Exception e) {
-            System.err.println("Invalid token");
             return false;
         }
     }
