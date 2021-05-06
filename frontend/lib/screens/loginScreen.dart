@@ -121,7 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
 
                           if (value.token.isNotEmpty) {
-                            _setErrorMessage(value.token + "\nADD REAL AUTH");
+                            onPressed:
+
+                            print(APIService.token);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/feed', (route) => false);
                           } else {
                             if (value.error.isNotEmpty) {
                               _setErrorMessage(value.error);
@@ -150,7 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     child: Text("Продолжить как гость"),
-                    onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/feed', (route) => false),
+                    onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                        context, '/feed', (route) => false),
                     style: ElevatedButton.styleFrom(),
                   )),
               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),

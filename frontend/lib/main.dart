@@ -1,3 +1,4 @@
+import 'package:crowtor/screens/addNewTweet.dart';
 import 'package:crowtor/screens/home.dart';
 import 'package:crowtor/screens/loginScreen.dart';
 import 'package:crowtor/screens/registrationScreen.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/registration': (context) => RegistrationScreen(),
         '/feed': (context) => Home(),
+        '/createTweet': (context) => AddNewTweetScreen(),
       },
     );
   }

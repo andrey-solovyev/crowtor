@@ -1,18 +1,13 @@
 import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class APIService {
 
-  // {
-  // "email": "andr@yandex.ru",
-  // "password": "qwerty"
-  // }
-
-  // /api/v1/security/login
-
+  static String token = "";
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
 
@@ -23,6 +18,9 @@ class APIService {
         uri, headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestModel.toJson()));
     if (response.statusCode == 200 || response.statusCode == 400) {
+
+      token = json.decode(response.body)["token"];
+
       return LoginResponseModel.fromJson(json.decode(response.body));
     } else {
       return LoginResponseModel.fromJson(
