@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 
@@ -39,9 +41,10 @@ public class SecurityController {
     @RequestMapping(method = POST, path = "/login")
     public ResponseEntity<AuthInfoDto> loginUser(@RequestBody LoginUserDto loginUserDto) throws EntityNotFoundException {
         if (loginUserDto == null || loginUserDto.getEmail()==null || loginUserDto.getPassword()==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        var auth = personService.loginPerson(loginUserDto);
+         var auth = personService.loginPerson(loginUserDto);
         return auth != null
                 ? new ResponseEntity<AuthInfoDto>(auth, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
 }

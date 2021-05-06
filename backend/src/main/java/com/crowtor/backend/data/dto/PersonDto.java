@@ -5,6 +5,7 @@ import com.crowtor.backend.data.models.Person;
 import com.crowtor.backend.data.models.Twitt;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,8 @@ import java.util.Set;
 @Data
 public class PersonDto {
     private Calendar birthday;
+
+    private LocalDateTime dateRegistration;
 
     private String firstName;
 
@@ -23,13 +26,9 @@ public class PersonDto {
 
     private Boolean isPremium = false;
 
-    private Set<Twitt> twitts;
+    private Set<TwittFeedDto> twitts;
 
-    private Set<Twitt> likes;
+    private int subscription ;
 
-    private Set<Comment> comments;
-
-    private Set<Person> subscription = new HashSet<>();
-
-    private Set<Person> subscribers = new HashSet<>();
+    private int subscribers;
 }

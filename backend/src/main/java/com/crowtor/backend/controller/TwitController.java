@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -35,13 +36,11 @@ public class TwitController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createTwitt(Authentication authentication,@RequestBody CreateTwittDto createTwittDto) throws EntityNotFoundException {
         if (authentication.isAuthenticated()) twittService.createTwitt(authentication.getName(),createTwittDto);
-
     }
     @RequestMapping(method = POST, path = "/like")
     @ResponseStatus(HttpStatus.CREATED)
     public void likeTwitt(Authentication authentication,@RequestParam long twittId) throws EntityNotFoundException {
         if (authentication.isAuthenticated()) twittService.likeTwitt(authentication.getName(),twittId);
-        else System.out.println("NO");
     }
     @RequestMapping(method = POST, path = "/dislike")
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,5 +50,9 @@ public class TwitController {
     @RequestMapping(method = POST, path = "/findAllTwitt")
     public ResponseEntity<List<TwittFeedDto>> findAll(Authentication authentication){
         return new ResponseEntity<>(twittService.findAll(),HttpStatus.OK);
+    }
+    @RequestMapping(method = GET,path = "/searchTwittsByText")
+    public ResponseEntity<List<TwittFeedDto>> searchTwittsByText(@RequestParam String text){
+        return new ResponseEntity<>(twittService.searchTextTwitts(text),HttpStatus.OK);
     }
 }

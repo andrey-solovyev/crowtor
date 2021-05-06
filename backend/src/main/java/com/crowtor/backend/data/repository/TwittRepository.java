@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
+
 @Repository
 
 public interface TwittRepository extends JpaRepository<Twitt,Long> {
@@ -14,5 +16,12 @@ public interface TwittRepository extends JpaRepository<Twitt,Long> {
     List<TwittFeedDto> findAllDto();
     @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName) from Twitt t where t.author.id in (select p.subscription from Person p where p.id=:personId) order by t.created")
     List<TwittFeedDto> findAllBySubscription(Long personId);
-//эластик серч
+
+    @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName) from Twitt t where t.author.id=:personId")
+    Set<TwittFeedDto> findAllTwittsFromUser(Long personId);
+
+    @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName) from Twitt t where :textSearch IN (t.textTwit)")
+    List<TwittFeedDto> findAllTwittsByText(String textSearch);
+
+
 }

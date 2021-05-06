@@ -23,12 +23,12 @@ public class PersonToPersonDtoObjectMapper extends BaseObjectMapper<Person, Pers
         personDto.setFirstName(obj.getFirstName());
         personDto.setLastName(obj.getLastName());
         personDto.setBirthday(obj.getBirthday());
+        personDto.setDateRegistration(obj.getDateRegistration());
         personDto.setNickName(obj.getNickName());
         personDto.setIsPremium(obj.getIsPremium());
         personDto.setIsDeleted(obj.getIsDeleted());
-        personDto.setTwitts(obj.getTwitts());
-        personDto.setSubscribers(obj.getSubscribers());
-        personDto.setSubscription(obj.getSubscription());
+        personDto.setSubscribers(obj.getSubscribers().size());
+        personDto.setSubscription(obj.getSubscription().size());
         return personDto;
     }
 

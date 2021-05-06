@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -31,6 +32,8 @@ public class Person {
     private String email;
     private Boolean isDeleted = false;
     private Boolean isPremium = false;
+    @Column(insertable = true, updatable = false)
+    private LocalDateTime dateRegistration;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "author")
     private Set<Twitt> twitts;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -71,6 +74,11 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private List<Role> roles;
+
+    @PrePersist
+    void onCreate() {
+        this.setDateRegistration(LocalDateTime.now());
+    }
 
     @Override
     public boolean equals(Object o) {

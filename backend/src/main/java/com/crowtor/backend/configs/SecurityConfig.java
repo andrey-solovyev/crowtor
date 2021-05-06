@@ -35,10 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(POST,"/api/v1/twitt/*").authenticated()
+                .antMatchers(POST,"/api/v1/person/*").authenticated()
+                .antMatchers(GET,"/api/v1/twitt/*").permitAll()
                 .antMatchers(GET,"/api/v1/twitt/id").permitAll()
                 .antMatchers(POST,"/api/v1/security/*").permitAll()
-                .antMatchers(GET,"/api/v1/calculation/search/*").hasRole("USER")
-                .antMatchers(GET,"/api/v1/calculation/search/*").hasRole("ADMIN")
                 .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);;
     }
 }
