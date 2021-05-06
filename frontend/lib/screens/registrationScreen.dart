@@ -226,8 +226,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             registrationRequestModel.lastName = lastNameController.text;
                             registrationRequestModel.bDay = bDayController.text;
                             registrationRequestModel.password = passwordController.text;
+                            registrationRequestModel.nickName = nickNameController.text;
 
-                            print(registrationRequestModel.toJson());
+                            // print(registrationRequestModel.toJson());
 
                             APIService apiService = new APIService();
                             apiService.register(registrationRequestModel).then((value) {

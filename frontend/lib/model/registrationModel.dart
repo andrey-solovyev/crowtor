@@ -9,6 +9,14 @@ class RegistrationRequestModel {
   String lastName;
   String bDay;
 
+  String getFormatBDay() {
+    List<String> splitBD = bDay.trim().split(".");
+
+    print(splitBD[2] + "-" + splitBD[1] + "-" + splitBD[0] + "T12:12:12.012Z");
+
+    return splitBD[2] + "-" + splitBD[1] + "-" + splitBD[0] + "T12:12:12.012Z";
+  }
+
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       "email": email.trim(),
@@ -16,7 +24,7 @@ class RegistrationRequestModel {
       "nickName": nickName.trim(),
       "firstName": firstName.trim(),
       "lastName": lastName.trim(),
-      "bDay": bDay.trim()
+      "birthday": getFormatBDay()
     };
     return map;
   }
