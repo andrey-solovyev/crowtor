@@ -25,11 +25,11 @@ class _FeedState extends State<Feed> {
     List<Widget> tweets = [];
     tweets.add(Tweet());
     tweets.add(Tweet());
-    tweets.add(Tweet());
-    tweets.add(Tweet());
-    tweets.add(Tweet());
-    tweets.add(Tweet());
-    tweets.add(Tweet());
+    // tweets.add(Tweet());
+    // tweets.add(Tweet());
+    // tweets.add(Tweet());
+    // tweets.add(Tweet());
+    // tweets.add(Tweet());
 
     void _scrollListener() {
       print(controller.position.extentAfter);

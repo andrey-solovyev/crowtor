@@ -1,3 +1,4 @@
+import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,9 @@ import 'dart:convert';
 class APIService {
 
   static String token = "";
+  static int currUserId = 1;
+
+
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
 
@@ -50,5 +54,9 @@ class APIService {
     } else {
     return RegistrationResponseModel.fromJson({"error":"Возникла проблема, повторите попытку позже"});
     }
+  }
+
+  Future<UserResponseModel> getUser(UserRequestModel requestModel) async {
+
   }
 }
