@@ -33,8 +33,9 @@ public class TwitController {
 
     @RequestMapping(method = POST, path = "/createTwit")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTwitt(@RequestBody CreateTwittDto createTwittDto) throws EntityNotFoundException {
-        twittService.createTwitt(createTwittDto);
+    public void createTwitt(Authentication authentication,@RequestBody CreateTwittDto createTwittDto) throws EntityNotFoundException {
+        if (authentication.isAuthenticated()) twittService.createTwitt(authentication.getName(),createTwittDto);
+
     }
     @RequestMapping(method = POST, path = "/like")
     @ResponseStatus(HttpStatus.CREATED)

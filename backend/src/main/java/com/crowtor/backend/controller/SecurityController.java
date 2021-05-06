@@ -4,6 +4,7 @@ import com.crowtor.backend.data.dto.securutyDto.AuthInfoDto;
 import com.crowtor.backend.data.dto.securutyDto.LoginUserDto;
 import com.crowtor.backend.data.dto.securutyDto.RegistPersonDto;
 import com.crowtor.backend.exceptions.EntityNotFoundException;
+import com.crowtor.backend.exceptions.InvalidAuthException;
 import com.crowtor.backend.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class SecurityController {
 
     @RequestMapping(method = POST, path = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity registerNewUser(@RequestBody RegistPersonDto registerUserDto) {
+    public ResponseEntity registerNewUser(@RequestBody RegistPersonDto registerUserDto) throws InvalidAuthException {
         if (registerUserDto == null || registerUserDto.getNickName()==null || registerUserDto.getPassword()==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         personService.createNewPerson(registerUserDto);
         return new ResponseEntity<>(HttpStatus.CREATED);

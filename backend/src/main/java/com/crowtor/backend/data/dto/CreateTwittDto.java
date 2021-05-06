@@ -9,6 +9,5 @@ import java.util.Set;
 public class CreateTwittDto {
     private String textTwit;
     private boolean isPremium;
-    private long personId;
-    private Set<Tag> tagSet;
+    private Set<String> tagSet;
 }
