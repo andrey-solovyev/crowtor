@@ -4,4 +4,6 @@ import com.crowtor.backend.data.models.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TagRepository  extends JpaRepository<Tag,Long> {
+    boolean existsByTextTag(String name);
+    Tag getByTextTag(String name);
 }

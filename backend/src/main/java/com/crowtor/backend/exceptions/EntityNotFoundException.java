@@ -1,10 +1,11 @@
 package com.crowtor.backend.exceptions;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.UUID;
-
-@Data
-public class EntityNotFoundException extends Exception {
+@ResponseStatus(code = HttpStatus.NOT_FOUND)
+public class EntityNotFoundException extends RuntimeException {
     private UUID uuid;
     private int id;
     private String clazzName;
@@ -18,6 +19,6 @@ public class EntityNotFoundException extends Exception {
     }
 
     public EntityNotFoundException(String clazzName) {
-        super(String.format("'%s' is not found ", clazzName));
+        super( clazzName);
     }
 }

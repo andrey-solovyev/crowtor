@@ -20,7 +20,7 @@ public class Tag {
     private String textTag;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name="twit_tag",
+            name="twitt_tag",
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "twit_id")
     )

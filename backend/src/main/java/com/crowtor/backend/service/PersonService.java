@@ -8,6 +8,7 @@ import com.crowtor.backend.data.models.Person;
 import com.crowtor.backend.data.repository.PersonRepository;
 import com.crowtor.backend.data.repository.RoleRepository;
 import com.crowtor.backend.exceptions.EntityNotFoundException;
+import com.crowtor.backend.exceptions.InvalidAuthException;
 import com.crowtor.backend.security.JwtSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,9 @@ public class PersonService {
         }
         return person;
     }
-    public void createNewPerson(RegistPersonDto registPersonDto){
+    public void createNewPerson(RegistPersonDto registPersonDto) throws InvalidAuthException {
         var per = new Person();
+        if (personRepository.existsByEmail(registPersonDto.getEmail())) throw new InvalidAuthException("Email is exists!");
         per.setBirthday(registPersonDto.getBirthday());
         per.setFirstName(registPersonDto.getFirstName());
         per.setLastName(registPersonDto.getLastName());
