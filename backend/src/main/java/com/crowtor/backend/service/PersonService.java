@@ -53,7 +53,6 @@ public class PersonService {
         var person = personRepository.findByEmail(email);
         if (person == null) {
             throw new EntityNotFoundException("Invalid login or password");
-
         }
         return person;
     }
@@ -67,8 +66,9 @@ public class PersonService {
         per.setEmail(registPersonDto.getEmail());
         per.setPassword(passwordEncoder.encode(registPersonDto.getPassword()));
         var userRole = roleRepository.findByName("ROLE_USER");
-        per.setRoles(Collections.singletonList(userRole));
         personRepository.save(per);
+        userRole.getPersons().add(findPersonByNickName(per.getNickName()));
+        roleRepository.save(userRole);
     }
     public void subscribe(String nickName, Long subscribeIdUser) {
         Person person = personRepository.findByNickName(nickName);
