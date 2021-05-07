@@ -65,7 +65,7 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         setState(() {
-                          // isApiCallProcess = true;
+                          isApiCallProcess = true;
                         });
 
                         requestModel.textTwit = textController.text;
@@ -74,15 +74,9 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
                           setState(() {
                             isApiCallProcess = false;
                           });
-
-                          // print(value.message);
-
-                          // if (value.message.isNotEmpty) {
-                          //   onPressed:
-                          //   Navigator.pushNamedAndRemoveUntil(
-                          //       context, '/feed', (route) => false);
-                          // }
-                        });
+                          Navigator.pushNamedAndRemoveUntil(context, "/feed", (route) => false);
+                        }
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(),

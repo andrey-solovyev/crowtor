@@ -29,6 +29,8 @@ class TweetResponseModel {
   final int amountLikes;
   final int amountDisLikes;
   final String created;
+  final String firstName;
+  final String lastName;
   final String textTwit;
   final String nickName;
   final bool premium;
@@ -38,6 +40,8 @@ class TweetResponseModel {
       this.amountLikes,
       this.amountDisLikes,
       this.created,
+      this.firstName,
+      this.lastName,
       this.textTwit,
       this.nickName,
       this.premium});
@@ -49,6 +53,8 @@ class TweetResponseModel {
         amountDisLikes:
             json['amountDisLikes'] != null ? json['amountDisLikes'] : -1,
         created: json['created'] != null ? json['created'] : "",
+        firstName: json['firstName'] != null ? json['firstName'] : "",
+        lastName: json['lastName'] != null ? json['lastName'] : "",
         textTwit: json['textTwit'] != null ? json['textTwit'] : "",
         nickName: json['nickName'] != null ? json['nickName'] : "",
         premium: json['premium'] != null ? json['premium'] : false);
