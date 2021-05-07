@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/UserModel.dart';
@@ -9,11 +9,8 @@ import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
-import 'package:flutter/material.dart';
-
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class APIService {
   static String token = "";
