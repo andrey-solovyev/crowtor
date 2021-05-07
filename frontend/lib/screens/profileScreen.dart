@@ -2,6 +2,7 @@ import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/components/tweet.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/feedModel.dart';
+import 'package:crowtor/model/subscribeModel.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -77,7 +78,21 @@ class _ProfileState extends State<Profile> {
                         child: SizedBox(
                           child: ElevatedButton(
                             child: Text("Подписаться"),
-                            onPressed: () => print("ПОДПИСАТЬСЯЯЯЯЯ"),
+                            onPressed: () {
+                              apiService.subscribe(SubscribeRequestModel(subscribeUser: responseModel.id)).then((value){
+                                // final snackBar = SnackBar(
+                                //   content: Text('Yay! A SnackBar!'),
+                                //   action: SnackBarAction(
+                                //     label: value.message,
+                                //     onPressed: () {
+                                //       // Some code to undo the change.
+                                //     },
+                                //   ),
+                                // );
+                                // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              });
+                                  print("ПОДПИСАТЬСЯЯЯЯЯ");
+                            },
                           ),
                           width: double.infinity,
                         ),

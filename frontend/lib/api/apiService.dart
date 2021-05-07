@@ -7,6 +7,8 @@ import 'package:crowtor/model/feedModel.dart';
 import 'package:crowtor/model/likeModel.dart';
 import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
+import 'package:crowtor/model/subscribeModel.dart';
+import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:flutter/material.dart';
 
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -156,6 +158,45 @@ class APIService {
       return DisLikeResponseModel.fromJson({"message":"Удачно"});
     } else {
       return DisLikeResponseModel.fromJson({"message":"Что то пошло не так"});
+    }
+  }
+
+  Future<SubscribeResponseModel> subscribe(SubscribeRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "person/subscribe?subscribeUser=" + requestModel.subscribeUser.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    print(response.statusCode);
+    print(response.body);
+
+    if (response.statusCode == 201) {
+      return SubscribeResponseModel.fromJson({"message":"Удачно"});
+    } else {
+      return SubscribeResponseModel.fromJson({"message":"Что то пошло не так"});
+    }
+  }
+
+  Future<UbSubscribeResponseModel> unSubscribe(UbSubscribeRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "person/subscribe?subscribeUser=" + requestModel.subscribeUser.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    if (response.statusCode == 201) {
+      return UbSubscribeResponseModel.fromJson({"message":"Удачно"});
+    } else {
+      return UbSubscribeResponseModel.fromJson({"message":"Что то пошло не так"});
     }
   }
 }
