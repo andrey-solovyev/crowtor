@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.springframework.util.StringUtils.hasText;
+
 @Component
 public class FIlterForJwt extends GenericFilterBean {
     private JwtSupplier jwtSupplier;
@@ -49,7 +50,7 @@ public class FIlterForJwt extends GenericFilterBean {
     private String getTokenFromRequest(HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (hasText(token) && token.startsWith("Bearer ")) {
-            return token.split(" ")[2];
+            return token.substring(7);
         }
         return null;
     }

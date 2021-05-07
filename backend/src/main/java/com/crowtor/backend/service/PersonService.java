@@ -1,5 +1,6 @@
 package com.crowtor.backend.service;
 
+import com.crowtor.backend.data.dto.PersonDto;
 import com.crowtor.backend.data.dto.securutyDto.AuthInfoDto;
 import com.crowtor.backend.data.dto.securutyDto.LoginUserDto;
 import com.crowtor.backend.data.dto.securutyDto.RegistPersonDto;
@@ -7,6 +8,7 @@ import com.crowtor.backend.data.mappers.Mapper;
 import com.crowtor.backend.data.models.Person;
 import com.crowtor.backend.data.repository.PersonRepository;
 import com.crowtor.backend.data.repository.RoleRepository;
+import com.crowtor.backend.data.repository.TwittRepository;
 import com.crowtor.backend.exceptions.EntityNotFoundException;
 import com.crowtor.backend.exceptions.InvalidAuthException;
 import com.crowtor.backend.security.JwtSupplier;
@@ -15,7 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 public class PersonService {
@@ -24,14 +29,16 @@ public class PersonService {
     private JwtSupplier jwtSupplier;
     private Mapper mapper;
     private RoleRepository roleRepository;
+    private TwittRepository twittRepository;
     private static Logger logger = LoggerFactory.getLogger(PersonService.class);
 
-    public PersonService(PersonRepository personRepository, PasswordEncoder passwordEncoder, JwtSupplier jwtSupplier, Mapper mapper, RoleRepository roleRepository) {
+    public PersonService(PersonRepository personRepository, PasswordEncoder passwordEncoder, JwtSupplier jwtSupplier, Mapper mapper, RoleRepository roleRepository, TwittRepository twittRepository) {
         this.personRepository = personRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtSupplier = jwtSupplier;
         this.mapper = mapper;
         this.roleRepository = roleRepository;
+        this.twittRepository = twittRepository;
     }
 
     public Person findPersonByNickName(String nickName) throws EntityNotFoundException {
@@ -46,7 +53,6 @@ public class PersonService {
         var person = personRepository.findByEmail(email);
         if (person == null) {
             throw new EntityNotFoundException("Invalid login or password");
-
         }
         return person;
     }
@@ -60,8 +66,9 @@ public class PersonService {
         per.setEmail(registPersonDto.getEmail());
         per.setPassword(passwordEncoder.encode(registPersonDto.getPassword()));
         var userRole = roleRepository.findByName("ROLE_USER");
-        per.setRoles(Collections.singletonList(userRole));
         personRepository.save(per);
+        userRole.getPersons().add(findPersonByNickName(per.getNickName()));
+        roleRepository.save(userRole);
     }
     public void subscribe(String nickName, Long subscribeIdUser) {
         Person person = personRepository.findByNickName(nickName);
@@ -81,5 +88,40 @@ public class PersonService {
         } else{
             throw new EntityNotFoundException("Invalid login or password");
         }
+    }
+
+    public PersonDto getUserByNickName(String nickName) {
+        var person = personRepository.findByNickName(nickName.toLowerCase());
+        if (person == null) throw new EntityNotFoundException("User not found");
+        var personDto=mapper.convert(person,PersonDto.class);
+        personDto.setTwitts(twittRepository.findAllTwittsFromUser(person.getId()));
+        return personDto;
+    }
+
+    public List<PersonDto> getSubscriberListUsers(String nickName) {
+        var person = personRepository.findByNickName(nickName.toLowerCase());
+        if (person == null) throw new EntityNotFoundException("User not found");
+        var personsDto=new ArrayList<PersonDto>();
+        for (Person p:person.getSubscribers()) {
+            var personDto = new PersonDto();
+            personDto.setNickName(p.getNickName());
+            person.setFirstName(p.getFirstName());
+            person.setLastName(p.getLastName());
+            personsDto.add(personDto);
+        }
+        return personsDto;
+    }
+    public List<PersonDto> getSubscriptionListUsers(String nickName) {
+        var person = personRepository.findByNickName(nickName.toLowerCase());
+        if (person == null) throw new EntityNotFoundException("User not found");
+        var personsDto=new ArrayList<PersonDto>();
+        for (Person p:person.getSubscription()) {
+            var personDto = new PersonDto();
+            personDto.setNickName(p.getNickName());
+            person.setFirstName(p.getFirstName());
+            person.setLastName(p.getLastName());
+            personsDto.add(personDto);
+        }
+        return personsDto;
     }
 }

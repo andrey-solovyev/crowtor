@@ -36,7 +36,7 @@ public class TwittService {
         var person = personRepository.findByNickName(nickName);
         if (person != null) twit.setAuthor(person);
         else throw new EntityNotFoundException("Person with nickname not found!!!");
-        twit.setPremium(createTwittDto.isPremium());
+        twit.setPremium(person.getIsPremium());
         if (createTwittDto.getTagSet()!=null && createTwittDto.getTagSet().size()>0){
             twit.setTags(new HashSet<Tag>());
             for (String tag: createTwittDto.getTagSet()){
@@ -53,7 +53,10 @@ public class TwittService {
         }
         twittRepository.save(twit);
     }
-
+    public List<TwittFeedDto> searchTextTwitts(String text){
+        List<TwittFeedDto> twittFeedDtos=twittRepository.findAllTwittsByText(text);
+        return twittFeedDtos;
+    }
     public void likeTwitt(String nickName, long twittId) throws EntityNotFoundException {
         var twitt = twittRepository.findById(twittId);
         var person = personRepository.findByNickName(nickName);
@@ -62,9 +65,6 @@ public class TwittService {
         var t = twitt.get();
         if (person.getLikes().contains(twitt.get())) person.getLikes().remove(t);
         else person.getLikes().add(t);
-        //t.getPersonLikes().add(person);
-        //twitt.get().setPersonLikes(twitt.get().getPersonLikes().add(person));
-        //twittRepository.saveAndFlush(t);
         personRepository.save(person);
     }
 

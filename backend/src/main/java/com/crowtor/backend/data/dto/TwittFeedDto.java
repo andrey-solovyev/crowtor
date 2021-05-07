@@ -12,8 +12,10 @@ public class TwittFeedDto {
     private int amountDisLikes;
     private LocalDateTime created;
     private String nickName;
+    private String firstName;
+    private String lastName;
 
-    public TwittFeedDto(Long id, String textTwit, boolean isPremium, int amountLikes, int amountDisLikes, LocalDateTime created, String nickName) {
+    public TwittFeedDto(Long id, String textTwit, boolean isPremium, int amountLikes, int amountDisLikes, LocalDateTime created, String nickName, String firstName, String lastName) {
         this.id = id;
         this.textTwit = textTwit;
         this.isPremium = isPremium;
@@ -21,5 +23,7 @@ public class TwittFeedDto {
         this.amountDisLikes = amountDisLikes;
         this.created = created;
         this.nickName = nickName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 }
