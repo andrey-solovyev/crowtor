@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crowtor/main.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
@@ -9,7 +10,9 @@ import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
+import 'package:crowtor/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,8 +25,11 @@ class APIService {
 
   void isAuthorized(){
     if (token == null || token.isEmpty) {
-      navigatorKey
-      // Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+      // return MyApp.navigatorKey.currentState.pushNamedAndRemoveUntil("/login", (route) => false);
+      print("qwe");
+      Get.to(LoginScreen());
+      // return MyApp.navigatorKey.currentState.pushNamed("/login");
+      // pushNamedAndRemoveUntil("/login", (route) => false);
     }
   }
 
@@ -70,6 +76,9 @@ class APIService {
   }
 
   Future<UserResponseModel> getCurrentUser() async {
+    // Get.to(LoginScreen());
+    // isAuthorized();
+
     Uri uri = Uri.parse(serverUrl + apiVersion + "/person/currentUser");
 
     final response = await http.post(
