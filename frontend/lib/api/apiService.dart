@@ -101,12 +101,6 @@ class APIService {
         },);
 
     return FeedResponseModel.fromJson(json.decode(response.body));
-
-    // if (response.statusCode == 201) {
-    //   return TweetResponseModel.fromJson({"message": "Твит успешно отправлен"});
-    // } else {
-    //   return TweetResponseModel.fromJson({"message": "Что то пошло не так"});
-    // }
   }
 
 

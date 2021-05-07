@@ -13,8 +13,50 @@ class Tweet extends StatefulWidget {
 }
 
 class _TweetState extends State<Tweet> {
+
+  int _amountLikes = 0;
+  int _amountDisLikes = 0;
+  bool isLiked = false;
+  bool isDisliked = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _amountLikes = widget.tweet.amountLikes;
+    _amountDisLikes  = widget.tweet.amountDisLikes;
+
+  }
+
+  void _like() {
+    setState(() {
+      _amountLikes++;
+    });
+  }
+
+  void _unLike() {
+    setState(() {
+      _amountLikes--;
+    });
+  }
+
+  void _disLike() {
+    setState(() {
+      _amountDisLikes++;
+    });
+  }
+
+  void _unDisLike() {
+    setState(() {
+      _amountDisLikes--;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
+
     return GestureDetector(
         onTap: () {
           print("OPEN TWEET");
@@ -40,7 +82,7 @@ class _TweetState extends State<Tweet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Andrey Andrey" + widget.tweet.created,
+                              "Andrey Andrey",
                               style: TextStyle(fontSize: 20),
                             ),
                             Padding(
@@ -60,12 +102,16 @@ class _TweetState extends State<Tweet> {
                   children: [
                     Row(
                       children: [
-                        Text(widget.tweet.amountLikes.toString()),
+                        Text(_amountLikes.toString()),
 
                         IconButton(
-                          icon: Icon(Icons.thumb_up),
+                          icon: Icon(Icons.thumb_up, color: isLiked ? Colors.red : Colors.grey[700],),
                           onPressed: () {
-                            print("thumb_up");
+                            if (isLiked) {
+
+                            } else {
+
+                            }
                           },
                         ),
                       ],
@@ -73,10 +119,10 @@ class _TweetState extends State<Tweet> {
 
                     Row(
                       children: [
-                        Text(widget.tweet.amountDisLikes.toString()),
+                        Text(_amountDisLikes.toString()),
 
                         IconButton(
-                          icon: Icon(Icons.thumb_down),
+                          icon: Icon(Icons.thumb_down, color: isDisliked ? Colors.black : Colors.grey[700],),
                           onPressed: () {
                             print("thumb_down");
                           },
