@@ -13,13 +13,7 @@ class Feed extends StatefulWidget {
 }
 
 class _FeedState extends State<Feed> {
-  // List<Tweet> tweets = [];
-  //
-  // void addNewTweets() {
-  //   setState(() {
-  //     tweets.add(Tweet());
-  //   });
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +35,8 @@ class _FeedState extends State<Feed> {
           print(tweets.length);
 
           return ListView.builder(
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
             itemCount: tweets.length,
             itemBuilder: (context, index) {
               return Padding(padding: EdgeInsets.fromLTRB(0, 12, 0, 0), child: tweets[index],);

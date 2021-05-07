@@ -11,6 +11,19 @@ class UserRequestModel {
   }
 }
 
+class UserRequestModelByNickName {
+  UserRequestModelByNickName({this.nickName });
+
+  String nickName ;
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> map = {
+      "nickName": nickName.trim(),
+    };
+    return map;
+  }
+}
+
 class UserResponseModel {
 
   UserResponseModel({
@@ -24,7 +37,8 @@ class UserResponseModel {
     this.isPremium,
     this.subscription,
     this.subscribers,
-    this.dateRegistration});
+    this.dateRegistration,
+  this.twitts});
 
 
   final int id;
@@ -40,6 +54,8 @@ class UserResponseModel {
   final int subscribers;
   final String dateRegistration;
 
+  final List<dynamic> twitts;
+
 
   factory UserResponseModel.fromJson(Map<String, dynamic> json) {
     return UserResponseModel(
@@ -53,7 +69,9 @@ class UserResponseModel {
         subscribers: json['subscribers'] != null ? json['subscribers'] : 0,
         subscription: json['subscription'] != null ? json['subscription'] : 0,
         isDeleted: json['isDeleted'] != null ? json['isDeleted'] : false,
+        twitts: json['twitts'] != null ? json['twitts'] : [],
         isPremium: json['isPremium'] != null ? json['isPremium'] : false);
+
   }
 }
 

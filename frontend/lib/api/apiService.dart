@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/UserModel.dart';
+import 'package:crowtor/model/disLikeModel.dart';
 import 'package:crowtor/model/feedModel.dart';
+import 'package:crowtor/model/likeModel.dart';
 import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
 import 'package:flutter/material.dart';
@@ -63,10 +65,27 @@ class APIService {
   Future<UserResponseModel> getCurrentUser() async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/person/currentUser");
 
-    final response = await http.post(uri, headers: {
-      'Authorization': 'Bearer $token',
-      "Content-Type": "application/json"
-    },);
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    return UserResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<UserResponseModel> getUserByNickName(UserRequestModelByNickName requestModel) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/person/getByNickName?nickName=" + requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
 
     return UserResponseModel.fromJson(json.decode(response.body));
   }
@@ -90,18 +109,53 @@ class APIService {
     }
   }
 
-
   Future<FeedResponseModel> getAllTweets() async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/findAllTwitt");
 
-    final response = await http.post(uri,
-        headers: {
-          'Authorization': 'Bearer $token',
-          "Content-Type": "application/json"
-        },);
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
 
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
 
+  Future<LikeResponseModel> likeTweet(LikeRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/like?twittId=" + requestModel.twittId.toString());
 
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    if (response.statusCode == 201) {
+      return LikeResponseModel.fromJson({"message":"Удачно"});
+    } else {
+      return LikeResponseModel.fromJson({"message":"Что то пошло не так"});
+    }
+  }
+
+  Future<DisLikeResponseModel> disLikeTweet(DisLikeRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/dislike?twittId=" + requestModel.twittId.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    if (response.statusCode == 201) {
+      return DisLikeResponseModel.fromJson({"message":"Удачно"});
+    } else {
+      return DisLikeResponseModel.fromJson({"message":"Что то пошло не так"});
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:crowtor/components/feed.dart';
-import 'package:crowtor/components/profile.dart';
+import 'package:crowtor/components/myProfile.dart';
 import 'package:crowtor/components/search.dart';
 import 'package:crowtor/screens/registrationScreen.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   static const List<Widget> _widgetOptions = <Widget>[
     Feed(),
     Search(),
-    Profile(),
+    MyProfile(),
   ];
 
   void _onItemTapped(int index) {
