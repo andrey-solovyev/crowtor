@@ -18,3 +18,6 @@ https://miro.com/app/board/o9J_lP41t_g=/
 [Курсовая работа.docx](documents/Курсовая%20работа%20ТП.docx)
 
 [Курсовая работа.pdf](documents/Курсовая%20работа%20ТП.pdf)
+
+[Демо видео(07.05.2021).mkv](documents/Демо видео(07.05.2021).mkv)
+
