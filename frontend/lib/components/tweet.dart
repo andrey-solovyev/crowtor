@@ -1,8 +1,13 @@
+import 'package:crowtor/model/TweetModel.dart';
 import 'package:flutter/material.dart';
 
 import 'MyText.dart';
 
 class Tweet extends StatefulWidget {
+  Tweet({Key key, this.tweet}) : super(key: key);
+
+  final TweetResponseModel tweet;
+
   @override
   _TweetState createState() => _TweetState();
 }
@@ -35,45 +40,50 @@ class _TweetState extends State<Tweet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Andrey Andrey",
+                              "Andrey Andrey" + widget.tweet.created,
                               style: TextStyle(fontSize: 20),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
-                              child: Text("@AK20001701"),
+                              child: Text("@" + widget.tweet.nickName),
                             ),
                           ]),
                     )),
-                // Text(
-                //   "Andrey Andrey",
-                //   style: TextStyle(fontSize: 20),
-                // ),
-                // Padding(
-                //   padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
-                //   child: Text("@AK20001701"),
-                // ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
                   child: MyText(
-                    text:
-                        "Лорем ипсум #голор сит амет, @sohy, #миним\$ веритус",
+                    text: widget.tweet.textTwit,
                   ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.thumb_up),
-                      onPressed: () {
-                        print("thumb_up");
-                      },
+                    Row(
+                      children: [
+                        Text(widget.tweet.amountLikes.toString()),
+
+                        IconButton(
+                          icon: Icon(Icons.thumb_up),
+                          onPressed: () {
+                            print("thumb_up");
+                          },
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.thumb_down),
-                      onPressed: () {
-                        print("thumb_down");
-                      },
+
+                    Row(
+                      children: [
+                        Text(widget.tweet.amountDisLikes.toString()),
+
+                        IconButton(
+                          icon: Icon(Icons.thumb_down),
+                          onPressed: () {
+                            print("thumb_down");
+                          },
+                        ),
+                      ],
                     ),
+
                     IconButton(
                       icon: Icon(Icons.comment),
                       onPressed: () {

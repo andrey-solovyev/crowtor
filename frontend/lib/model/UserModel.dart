@@ -12,15 +12,20 @@ class UserRequestModel {
 }
 
 class UserResponseModel {
-  UserResponseModel(
-      {this.id,
-        this.birthday,
-        this.firstName,
-        this.lastName,
-        this.nickName,
-        this.email,
-        this.isDeleted,
-        this.isPremium});
+
+  UserResponseModel({
+    this.id,
+    this.birthday,
+    this.firstName,
+    this.lastName,
+    this.nickName,
+    this.email,
+    this.isDeleted,
+    this.isPremium,
+    this.subscription,
+    this.subscribers,
+    this.dateRegistration});
+
 
   final int id;
   final String birthday;
@@ -31,32 +36,24 @@ class UserResponseModel {
   final bool isDeleted;
   final bool isPremium;
 
+  final int subscription;
+  final int subscribers;
+  final String dateRegistration;
 
 
   factory UserResponseModel.fromJson(Map<String, dynamic> json) {
     return UserResponseModel(
-        id: json['id'] != null ? json['id'] : "",
+        id: json['id'] != null ? json['id'] : -1,
         birthday: json['birthday'] != null ? json['birthday'] : "",
         firstName: json['firstName'] != null ? json['firstName'] : "",
         lastName: json['lastName'] != null ? json['lastName'] : "",
         nickName: json['nickName'] != null ? json['nickName'] : "",
         email: json['email'] != null ? json['email'] : "",
-        isDeleted: json['isDeleted'] != null ? json['isDeleted'] : "",
-        isPremium: json['isPremium'] != null ? json['isPremium'] : "");
+        dateRegistration: json['dateRegistration'] != null ? json['dateRegistration'] : "",
+        subscribers: json['subscribers'] != null ? json['subscribers'] : 0,
+        subscription: json['subscription'] != null ? json['subscription'] : 0,
+        isDeleted: json['isDeleted'] != null ? json['isDeleted'] : false,
+        isPremium: json['isPremium'] != null ? json['isPremium'] : false);
   }
 }
 
-// class UserResponseModel {
-//
-//
-//   final String token;
-//   final String error;
-//
-//   UserResponseModel({this.token, this.error});
-//
-//
-//
-//   factory UserResponseModel.fromJson(Map<String, dynamic> json){
-//     return UserResponseModel(token: json['token'] != null ? json['token'] : "", error: json['error'] != null ? json['error'] : "");
-//   }
-// }

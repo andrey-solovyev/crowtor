@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/components/progressHUD.dart';
+import 'package:crowtor/model/TweetModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,7 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
   bool isApiCallProcess = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController textController = TextEditingController();
+  TweetRequestModel requestModel = new TweetRequestModel();
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +23,7 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
   }
 
   Widget _uiSetup(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Crowtor"),
@@ -60,13 +64,24 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
                     child: Text("Опубликовать"),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        print(textController.text);
                         setState(() {
-                          isApiCallProcess = true;
+                          // isApiCallProcess = true;
                         });
 
-                        setState(() {
-                          isApiCallProcess = false;
+                        requestModel.textTwit = textController.text;
+                        APIService apiService = new APIService();
+                        apiService.createTweet(requestModel).then((value) {
+                          setState(() {
+                            isApiCallProcess = false;
+                          });
+
+                          // print(value.message);
+
+                          // if (value.message.isNotEmpty) {
+                          //   onPressed:
+                          //   Navigator.pushNamedAndRemoveUntil(
+                          //       context, '/feed', (route) => false);
+                          // }
                         });
                       }
                     },

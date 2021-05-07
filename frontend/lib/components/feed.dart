@@ -1,4 +1,7 @@
+import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/components/tweet.dart';
+import 'package:crowtor/model/TweetModel.dart';
+import 'package:crowtor/model/feedModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,48 +24,31 @@ class _FeedState extends State<Feed> {
   @override
   Widget build(BuildContext context) {
 
-    ScrollController controller;
     List<Widget> tweets = [];
-    tweets.add(Tweet());
-    tweets.add(Tweet());
-    // tweets.add(Tweet());
-    // tweets.add(Tweet());
-    // tweets.add(Tweet());
-    // tweets.add(Tweet());
-    // tweets.add(Tweet());
 
-    void _scrollListener() {
-      print(controller.position.extentAfter);
-      if (controller.position.extentAfter < 500) {
-        setState(() {
-          tweets.add(Tweet());
-          // items.addAll(new List.generate(42, (index) => 'Inserted $index'));
-        });
-      }
-    }
+    APIService apiService = new APIService();
 
-    @override
-    void initState() {
-      super.initState();
-      controller = new ScrollController()..addListener(_scrollListener);
-    }
+    return FutureBuilder<FeedResponseModel>(
+      future: apiService.getAllTweets(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          FeedResponseModel responseModel = snapshot.data;
+          for (int i = 0; i < responseModel.tweets.length; i++){
+            tweets.add(Tweet(tweet: responseModel.tweets[i],));
+          }
 
-    @override
-    void dispose() {
-      controller.removeListener(_scrollListener);
-      super.dispose();
-    }
+          print(responseModel.tweets.length);
+          print(tweets.length);
 
-
-    // final items = List<String>.generate(10000, (i) => "Item $i");
-
-    return ListView.builder(
-      controller: controller,
-      itemCount: tweets.length,
-      itemBuilder: (context, index) {
-        return Padding(padding: EdgeInsets.fromLTRB(0, 12, 0, 0), child: tweets[index],);
+          return ListView.builder(
+            itemCount: tweets.length,
+            itemBuilder: (context, index) {
+              return Padding(padding: EdgeInsets.fromLTRB(0, 12, 0, 0), child: tweets[index],);
+            },
+          );
+        }
+        return Center(child: CircularProgressIndicator());
       },
     );
-    // FloatingActionButton(onPressed: addNewTweets, child: Text("qwe"),));
   }
 }
