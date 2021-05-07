@@ -10,9 +10,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
+  static final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
+
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -27,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/feed': (context) => Home(),
         '/createTweet': (context) => AddNewTweetScreen(),
       },
+      navigatorKey: navigatorKey,
     );
   }
 }

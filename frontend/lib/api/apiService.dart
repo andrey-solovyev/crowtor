@@ -9,6 +9,7 @@ import 'package:crowtor/model/loginModel.dart';
 import 'package:crowtor/model/registrationModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
+import 'package:flutter/material.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,6 +19,13 @@ class APIService {
 
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
+
+  void isAuthorized(){
+    if (token == null || token.isEmpty) {
+      navigatorKey
+      // Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+    }
+  }
 
   Future<LoginResponseModel> login(LoginRequestModel requestModel) async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/security/login");
@@ -196,4 +204,5 @@ class APIService {
       return UbSubscribeResponseModel.fromJson({"message":"Что то пошло не так"});
     }
   }
+
 }
