@@ -4,6 +4,7 @@ import 'package:crowtor/screens/loginScreen.dart';
 import 'package:crowtor/screens/registrationScreen.dart';
 import 'package:crowtor/screens/startScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,8 +19,8 @@ class MyApp extends StatelessWidget {
 
 
     // GetMaterialApp
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return GetMaterialApp(
+      title: 'Crowtor',
       theme: ThemeData(
         primarySwatch: Colors.red,
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/feed': (context) => Home(),
         '/createTweet': (context) => AddNewTweetScreen(),
       },
-      navigatorKey: navigatorKey,
+      // navigatorKey: navigatorKey,
     );
   }
 }
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(
               child: Text("To start screen"),
               color: Colors.amber,
+              // onPressed: () => Get.to(() => StartScreen())
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return  StartScreen();
