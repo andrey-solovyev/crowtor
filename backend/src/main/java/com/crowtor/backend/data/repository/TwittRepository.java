@@ -16,7 +16,7 @@ public interface TwittRepository extends JpaRepository<Twitt,Long> {
     List<TwittFeedDto> findAllDto();
     @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName,t.author.firstName,t.author.lastName) from Twitt t where t.author.id in (select p.subscription from Person p where p.id=:personId) order by t.created")
     List<TwittFeedDto> findAllBySubscription(Long personId);
-
+//select * from Twitt t JOIN user_subscriptions us on t.person_id = us.subscriber_id and us.person_id = 2;
     @Query("select new com.crowtor.backend.data.dto.TwittFeedDto(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName,t.author.firstName,t.author.lastName) from Twitt t where t.author.id=:personId")
     Set<TwittFeedDto> findAllTwittsFromUser(Long personId);
 

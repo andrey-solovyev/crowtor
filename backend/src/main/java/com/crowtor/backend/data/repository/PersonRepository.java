@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Repository
 @EnableJpaRepositories
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    @Query("select p from Person p where lower(p.nickName)=:nickName")
+    @Query("select p from Person p where lower(p.nickName)=lower(:nickName)")
     Person findByNickName(String nickName);
 
     @Query("select p from Person p where p.email=:email")
