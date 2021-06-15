@@ -6,6 +6,7 @@ import com.crowtor.backend.data.dto.securutyDto.LoginUserDto;
 import com.crowtor.backend.data.dto.securutyDto.RegistPersonDto;
 import com.crowtor.backend.data.mappers.Mapper;
 import com.crowtor.backend.data.models.Person;
+import com.crowtor.backend.data.models.Role;
 import com.crowtor.backend.data.repository.PersonRepository;
 import com.crowtor.backend.data.repository.RoleRepository;
 import com.crowtor.backend.data.repository.TwittRepository;
@@ -16,11 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class PersonService {
@@ -44,15 +44,14 @@ public class PersonService {
     public Person findPersonByNickName(String nickName) throws EntityNotFoundException {
         var person = personRepository.findByNickName(nickName);
         if (person == null) {
-            throw new EntityNotFoundException("Invalid login or password");
-
+            throw new EntityNotFoundException("Entity Not Found Exception");
         }
         return person;
     }
     public Person findPersonByEmail(String email) throws EntityNotFoundException {
         var person = personRepository.findByEmail(email);
         if (person == null) {
-            throw new EntityNotFoundException("Invalid login or password");
+            throw new EntityNotFoundException("Entity Not Found Exception");
         }
         return person;
     }
@@ -65,10 +64,11 @@ public class PersonService {
         per.setNickName(registPersonDto.getNickName());
         per.setEmail(registPersonDto.getEmail());
         per.setPassword(passwordEncoder.encode(registPersonDto.getPassword()));
-        var userRole = roleRepository.findByName("ROLE_USER");
+        var userRole = roleRepository.findByName("USER_ROLE");
+        var roles = new ArrayList<Role>();
+        roles.add(userRole);
+        per.setRoles(new ArrayList<Role>(roles));
         personRepository.save(per);
-        userRole.getPersons().add(findPersonByNickName(per.getNickName()));
-        roleRepository.save(userRole);
     }
     public void subscribe(String nickName, Long subscribeIdUser) {
         Person person = personRepository.findByNickName(nickName);

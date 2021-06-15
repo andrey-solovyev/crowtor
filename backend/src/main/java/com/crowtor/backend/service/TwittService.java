@@ -1,5 +1,6 @@
 package com.crowtor.backend.service;
 
+import com.crowtor.backend.data.dto.CommentDto;
 import com.crowtor.backend.data.dto.CreateTwittDto;
 import com.crowtor.backend.data.dto.TwittFeedDto;
 import com.crowtor.backend.data.models.Person;
@@ -80,5 +81,37 @@ public class TwittService {
 
     public List<TwittFeedDto> findAll() {
         return twittRepository.findAllDto();
+    }
+
+    public List<TwittFeedDto> findAllSubc(String nickName) {
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        return findAll();
+//                ? twittRepository.findAllBySubscription(person.getId())
+//                : ;
+    }
+
+    public void addComment(String nickName,CommentDto commentDto) {
+        var twitt = twittRepository.findById(commentDto.getTwittId());
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        if (!twitt.isPresent()) throw new EntityNotFoundException(commentDto.getTwittId(), Twitt.class.toString());
+        twitt.get().getPersonLikes().add(person);
+        twittRepository.save(twitt.get());
+
+    }
+
+    public void deleteById(String nickName, long twittId) {
+        var twitt = twittRepository.findById(twittId);
+        var person = personRepository.findByNickName(nickName);
+        twittRepository.delete(twitt.get());
+    }
+    public void editTwittById(CreateTwittDto createTwittDto,String nickName, long twittId) {
+        var twitt = twittRepository.findById(twittId);
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
+        twitt.get().setTextTwit(createTwittDto.getTextTwit());
+        twittRepository.save(twitt.get());
     }
 }

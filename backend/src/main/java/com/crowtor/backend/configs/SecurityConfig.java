@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(POST,"/api/v1/twitt/*").authenticated()
                 .antMatchers(POST,"/api/v1/person/*").authenticated()
+                .antMatchers(POST,"/api/v1/twitt/findAllTwitt").permitAll()
                 .antMatchers(GET,"/api/v1/twitt/*").permitAll()
                 .antMatchers(GET,"/api/v1/twitt/id").permitAll()
                 .antMatchers(POST,"/api/v1/security/*").permitAll()
