@@ -26,15 +26,24 @@ class APIService {
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
 
-  void log(response){
-    print(response.body);
+  void log(response) {
+    if (token != "") {
+      print("token: " + token);
+    }
+    print("body: " + response.body);
+    print("------------------------------------------------------------------"
+        "---------------------------------------------------------------------"
+        "---------------");
   }
 
   void isAuthorized() {
     if (token == null || token.isEmpty) {
       Future.microtask(() {
         Get.offAllNamed('/login');
-        Get.snackbar("Авторизация", "Для продолжения водите или зарегистрируйтесь",);
+        Get.snackbar(
+          "Авторизация",
+          "Для продолжения водите или зарегистрируйтесь",
+        );
       });
     }
   }
@@ -48,14 +57,18 @@ class APIService {
 
     log(response);
 
-    getCurrentUser();
-
     if (response.statusCode == 200 || response.statusCode == 400) {
       token = json.decode(response.body)["token"];
+      getCurrentUser();
       return LoginResponseModel.fromJson(json.decode(response.body));
     } else {
-      return LoginResponseModel.fromJson(
-          {"error": "Не удалось загрузить данные"});
+      if (json.decode(response.body)["message"] ==
+          "Invalid login or password") {
+        return LoginResponseModel.fromJson(
+            {"error": "Не верный логин или пароль"});
+      }
+
+      return LoginResponseModel.fromJson({"error": "Что то пошло не так..."});
     }
   }
 
@@ -63,15 +76,14 @@ class APIService {
       RegistrationRequestModel requestModel) async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/security/register");
 
-    print(requestModel.toJson());
+    // print(requestModel.toJson());
 
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestModel.toJson()));
 
     // print(json.decode(response.body));
-    print(response.statusCode);
-    print(response.body);
+    log(response);
 
     if (response.statusCode == 201) {
       return RegistrationResponseModel.fromJson(
@@ -81,22 +93,18 @@ class APIService {
     if (response.statusCode == 200 || response.statusCode == 400) {
       return RegistrationResponseModel.fromJson(json.decode(response.body));
     } else {
-
-      if (json.decode(response.body)['message'] == "Email is exists!"){
+      if (json.decode(response.body)['message'] == "Email is exists!") {
         return RegistrationResponseModel.fromJson(
-            {"error": "Пользователь с данным email уже зарегистрирован."}
-        );
+            {"error": "Пользователь с данным email уже зарегистрирован."});
       }
 
-      if (json.decode(response.body)['message'] == "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"){
+      if (json.decode(response.body)['message'] == "Nickname is exists!") {
         return RegistrationResponseModel.fromJson(
-            {"error": "Данный никнейм уже занят."}
-        );
+            {"error": "Данный никнейм уже занят."});
       }
 
       return RegistrationResponseModel.fromJson(
-          {"error": "Возникла проблема, повторите попытку позже"}
-          );
+          {"error": "Возникла проблема, повторите попытку позже"});
     }
   }
 
@@ -112,6 +120,8 @@ class APIService {
         "Content-Type": "application/json"
       },
     );
+
+    log(response);
 
     currUserNickName = json.decode(response.body)["nickName"];
 
@@ -133,6 +143,8 @@ class APIService {
       },
     );
 
+    log(response);
+
     return UserResponseModel.fromJson(json.decode(response.body));
   }
 
@@ -145,6 +157,8 @@ class APIService {
           "Content-Type": "application/json"
         },
         body: jsonEncode(requestModel.toJson()));
+
+    log(response);
 
     if (response.statusCode == 201) {
       return TweetResponseModel.fromJson({"message": "Твит успешно отправлен"});
@@ -164,8 +178,10 @@ class APIService {
       },
     );
 
-    print("token: " + token);
-    print(json.decode(response.body));
+    log(response);
+
+    // print("token: " + token);
+    // print(json.decode(response.body));
 
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
@@ -184,6 +200,8 @@ class APIService {
         "Content-Type": "application/json"
       },
     );
+
+    log(response);
 
     if (response.statusCode == 201) {
       return LikeResponseModel.fromJson({"message": "Удачно"});
@@ -208,6 +226,8 @@ class APIService {
       },
     );
 
+    log(response);
+
     if (response.statusCode == 201) {
       return DisLikeResponseModel.fromJson({"message": "Удачно"});
     } else {
@@ -231,8 +251,10 @@ class APIService {
       },
     );
 
-    print(response.statusCode);
-    print(response.body);
+    log(response);
+
+    // print(response.statusCode);
+    // print(response.body);
 
     if (response.statusCode == 201) {
       return SubscribeResponseModel.fromJson({"message": "Удачно"});
