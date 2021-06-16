@@ -21,10 +21,14 @@ import 'package:http/http.dart' as http;
 
 class APIService {
   static String token = "";
-  static int currUserId = 1;
+  static String currUserNickName;
 
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
+
+  void log(response){
+    print(response.body);
+  }
 
   void isAuthorized() {
     if (token == null || token.isEmpty) {
@@ -41,9 +45,13 @@ class APIService {
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestModel.toJson()));
+
+    log(response);
+
+    getCurrentUser();
+
     if (response.statusCode == 200 || response.statusCode == 400) {
       token = json.decode(response.body)["token"];
-
       return LoginResponseModel.fromJson(json.decode(response.body));
     } else {
       return LoginResponseModel.fromJson(
@@ -63,6 +71,7 @@ class APIService {
 
     // print(json.decode(response.body));
     print(response.statusCode);
+    print(response.body);
 
     if (response.statusCode == 201) {
       return RegistrationResponseModel.fromJson(
@@ -72,8 +81,22 @@ class APIService {
     if (response.statusCode == 200 || response.statusCode == 400) {
       return RegistrationResponseModel.fromJson(json.decode(response.body));
     } else {
+
+      if (json.decode(response.body)['message'] == "Email is exists!"){
+        return RegistrationResponseModel.fromJson(
+            {"error": "Пользователь с данным email уже зарегистрирован."}
+        );
+      }
+
+      if (json.decode(response.body)['message'] == "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"){
+        return RegistrationResponseModel.fromJson(
+            {"error": "Данный никнейм уже занят."}
+        );
+      }
+
       return RegistrationResponseModel.fromJson(
-          {"error": "Возникла проблема, повторите попытку позже"});
+          {"error": "Возникла проблема, повторите попытку позже"}
+          );
     }
   }
 
@@ -89,6 +112,8 @@ class APIService {
         "Content-Type": "application/json"
       },
     );
+
+    currUserNickName = json.decode(response.body)["nickName"];
 
     return UserResponseModel.fromJson(json.decode(response.body));
   }
@@ -138,6 +163,9 @@ class APIService {
         "Content-Type": "application/json"
       },
     );
+
+    print("token: " + token);
+    print(json.decode(response.body));
 
     return FeedResponseModel.fromJson(json.decode(response.body));
   }

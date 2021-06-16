@@ -28,6 +28,8 @@ class _TweetState extends State<Tweet> {
     super.initState();
     _amountLikes = widget.tweet.amountLikes;
     _amountDisLikes = widget.tweet.amountDisLikes;
+    isLiked = widget.tweet.like;
+    isDisliked = widget.tweet.dislike;
   }
 
   void _like() {
@@ -74,7 +76,6 @@ class _TweetState extends State<Tweet> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile(nickName: widget.tweet.nickName,)));
           print("OPEN TWEET");
         },
         child: Container(
@@ -92,7 +93,11 @@ class _TweetState extends State<Tweet> {
               children: [
                 GestureDetector(
                     onTap: () {
-                      print("OPEN OTHER USER PROFILE");
+
+                      if (widget.tweet.nickName != APIService.currUserNickName){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile(nickName: widget.tweet.nickName,)));
+                        print("OPEN OTHER USER PROFILE" + widget.tweet.nickName + " " + APIService.currUserNickName);
+                      }
                     },
                     child: new Container(
                       child: new Column(
