@@ -74,7 +74,7 @@ class UserResponseModel {
         isDeleted: json['isDeleted'] != null ? json['isDeleted'] : false,
         twitts: json['twitts'] != null ? json['twitts'] : [],
         isPremium: json['isPremium'] != null ? json['isPremium'] : false,
-        isSubscribed: json['isSubscribed'] != null ? json['isSubscribed'] : false
+        isSubscribed: json['isSubscriber'] != null ? json['isSubscriber'] : false
     );
   }
 }

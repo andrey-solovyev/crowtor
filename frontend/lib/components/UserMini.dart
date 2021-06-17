@@ -95,6 +95,9 @@ class _UserMiniState extends State<UserMini> {
                                             );
                                           });
                                         },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.purple,
+                                  ),
                                       )
                                     : ElevatedButton(
                                         child: Text("Подписаться"),

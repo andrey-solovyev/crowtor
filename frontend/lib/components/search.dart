@@ -16,6 +16,7 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  TextEditingController textController = TextEditingController();
   APIService apiService = new APIService();
   List<Widget> tweets = [];
   List<Widget> users = [];
@@ -26,6 +27,12 @@ class _SearchState extends State<Search> {
   void _setSearch(newUserSearch){
     setState(() {
       userSearch = newUserSearch;
+    });
+  }
+
+  void _searchText(newSearchText){
+    setState(() {
+      searchText = newSearchText;
     });
   }
 
@@ -40,8 +47,9 @@ class _SearchState extends State<Search> {
             children: [
               Padding(
                 child: TextFormField(
+                  controller: textController,
                   // controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       labelText: "Поиск",
                       hintText: "Введите интересующий вас запрос"),
@@ -62,6 +70,7 @@ class _SearchState extends State<Search> {
                       child: Text("Найти твит"),
                       onPressed: () {
                         _setSearch(false);
+                        _searchText(textController.text);
                       },
                       style: ElevatedButton.styleFrom(),
                     )),
@@ -75,6 +84,7 @@ class _SearchState extends State<Search> {
                       child: Text("Найти пользователя"),
                       onPressed: () {
                         _setSearch(true);
+                        _searchText(textController.text);
                       },
                       style: ElevatedButton.styleFrom(),
                     )),
