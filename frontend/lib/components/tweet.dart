@@ -31,6 +31,9 @@ class _TweetState extends State<Tweet> {
     _amountDisLikes = widget.tweet.amountDisLikes;
     isLiked = widget.tweet.like;
     isDisliked = widget.tweet.dislike;
+
+
+    print(widget.tweet.id.toString() + " " + widget.tweet.textTwit + " " + isLiked.toString() + " " + isDisliked.toString());
   }
 
   void _like() {

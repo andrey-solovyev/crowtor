@@ -23,9 +23,25 @@ class UserMini extends StatefulWidget {
 
 class _UserMiniState extends State<UserMini> {
   APIService apiService = new APIService();
+  bool _isSubscribed = false;
+  bool _isChanged = false;
+
+  void _changeSub(isSub) {
+    setState(() {
+      _isChanged = true;
+      _isSubscribed = isSub;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    if (!_isChanged) {
+      _changeSub(widget.user.isSubscribed);
+    }
+
+    print("is" + _isSubscribed.toString());
+
     return GestureDetector(
         onTap: () {
           if (widget.user.nickName != APIService.currUserNickName) {
@@ -74,7 +90,7 @@ class _UserMiniState extends State<UserMini> {
                             Padding(
                               padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
                               child: SizedBox(
-                                child: widget.user.isSubscribed
+                                child: _isSubscribed
                                     ? ElevatedButton(
                                         child: Text("Отписаться"),
                                         onPressed: () {
@@ -93,6 +109,7 @@ class _UserMiniState extends State<UserMini> {
                                               "Отписка",
                                               " на @" + widget.user.nickName,
                                             );
+                                            _changeSub(false);
                                           });
                                         },
                                   style: ElevatedButton.styleFrom(
@@ -112,6 +129,8 @@ class _UserMiniState extends State<UserMini> {
                                                 widget.user.id.toString() +
                                                 " message: " +
                                                 value.message);
+
+                                            _changeSub(true);
 
                                             Get.snackbar(
                                               "Подписка",

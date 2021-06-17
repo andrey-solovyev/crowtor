@@ -30,6 +30,9 @@ class _MyProfileState extends State<MyProfile> {
         if (snapshot.hasData) {
           UserResponseModel responseModel = snapshot.data;
 
+
+          tweets.clear();
+
           FeedResponseModel feedResponseModel =
               FeedResponseModel.fromJson(snapshot.data.twitts);
 
