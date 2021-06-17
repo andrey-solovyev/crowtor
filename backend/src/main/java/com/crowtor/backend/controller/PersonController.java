@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -52,4 +53,10 @@ public class PersonController {
     public void unSubscribe(Authentication authentication,@RequestParam long subscribeUser) {
         personService.unSubscribe(authentication.getName(),subscribeUser);
     }
+
+    @RequestMapping(method = GET, path = "/search")
+    public ResponseEntity<List<PersonDto>> searchPersons(@RequestParam("nickName") String nickname) {
+        return new ResponseEntity<>(personService.findPersonByNickNameAll(nickname),HttpStatus.OK);
+    }
+
 }

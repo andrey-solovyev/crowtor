@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDto {
-
-    private String comment;
-    private long twittId;
+public class CommentFeedDto {
+    private long id;
+    private String textComment;
+    private String nickname;
 }

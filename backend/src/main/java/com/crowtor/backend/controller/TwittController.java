@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 
 @RestController
 @RequestMapping("/api/v1/twitt")
@@ -53,7 +53,7 @@ public class TwittController {
 
     @RequestMapping(method = POST, path = "/findAllTwitt")
     public ResponseEntity<List<TwittFeedDto>> findAll(Authentication authentication) {
-        return authentication.isAuthenticated()
+        return authentication!=null && authentication.isAuthenticated()
                 ? new ResponseEntity<>(twittService.findAllSubc(authentication.getName()), HttpStatus.OK)
                 : new ResponseEntity<>(twittService.findAll(), HttpStatus.OK);
     }
@@ -61,6 +61,10 @@ public class TwittController {
     @RequestMapping(method = GET, path = "/searchTwittsByText")
     public ResponseEntity<List<TwittFeedDto>> searchTwittsByText(@RequestParam String text) {
         return new ResponseEntity<>(twittService.searchTextTwitts(text), HttpStatus.OK);
+    }
+    @RequestMapping(method = GET, path = "/{id}")
+    public ResponseEntity<TwittFeedDto> searchTwittsByText(@PathVariable("id") long id) {
+        return new ResponseEntity<>(twittService.findById(id), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST, path = "/comment")
@@ -71,17 +75,35 @@ public class TwittController {
         }
     }
 
-    @RequestMapping(method = POST, path = "/delete")
+    @RequestMapping(method = DELETE, path = "/delete")
     public void deleteTwitt(Authentication authentication, @RequestParam long twittId) {
         if (authentication.isAuthenticated()) {
             twittService.deleteById(authentication.getName(), twittId);
         }
     }
 
-    @RequestMapping(method = POST, path = "/edit")
+    @RequestMapping(method = PUT, path = "/edit")
     public void editTwitt(Authentication authentication,@RequestBody CreateTwittDto createTwittDto ,@RequestParam long twittId) {
         if (authentication.isAuthenticated()) {
             twittService.editTwittById(createTwittDto,authentication.getName(),twittId);
         }
+    }
+    @RequestMapping(method = POST, path = "/saveTwitt")
+    public void saveTwittForUser(Authentication authentication,@RequestParam long twittId) {
+        if (authentication.isAuthenticated()) {
+            twittService.saveTwittForUser(authentication.getName(),twittId);
+        }
+    }
+    @RequestMapping(method = DELETE, path = "/deleteSaveTwitt")
+    public void deleteTwittForUser(Authentication authentication,@RequestParam long twittId) {
+        if (authentication.isAuthenticated()) {
+            twittService.deleteTwittForUser(authentication.getName(),twittId);
+        }
+    }
+
+    @RequestMapping(method = POST, path = "/getSaveTwitt")
+    public ResponseEntity<List<TwittFeedDto>> editTwitt(Authentication authentication) {
+        if (authentication.isAuthenticated()) return null;
+        return new ResponseEntity<>(twittService.getSaveTwitt(authentication.getName()), HttpStatus.OK);
     }
 }

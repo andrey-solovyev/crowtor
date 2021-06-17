@@ -48,6 +48,14 @@ public class PersonService {
         }
         return person;
     }
+    public List<PersonDto> findPersonByNickNameAll(String nickName){
+        List<PersonDto> result = new ArrayList<>();
+        var persons = personRepository.findByNickNameAll(nickName+"%");
+        for (Person p:persons){
+            result.add(mapper.convert(p,PersonDto.class));
+        }
+        return result;
+    }
     public Person findPersonByEmail(String email) throws EntityNotFoundException {
         var person = personRepository.findByEmail(email);
         if (person == null) {
@@ -58,6 +66,7 @@ public class PersonService {
     public void createNewPerson(RegistPersonDto registPersonDto) throws InvalidAuthException {
         var per = new Person();
         if (personRepository.existsByEmail(registPersonDto.getEmail())) throw new InvalidAuthException("Email is exists!");
+        else if (personRepository.existsByNickName(registPersonDto.getNickName())) throw new InvalidAuthException("Nickname is exists!");
         per.setBirthday(registPersonDto.getBirthday());
         per.setFirstName(registPersonDto.getFirstName());
         per.setLastName(registPersonDto.getLastName());

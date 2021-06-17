@@ -20,6 +20,7 @@ public class PersonToPersonDtoObjectMapper extends BaseObjectMapper<Person, Pers
     @Override
     public PersonDto convert(Person obj) {
         var personDto =new PersonDto();
+        personDto.setId(obj.getId());
         personDto.setFirstName(obj.getFirstName());
         personDto.setLastName(obj.getLastName());
         personDto.setBirthday(obj.getBirthday());

@@ -3,9 +3,13 @@ package com.crowtor.backend.service;
 import com.crowtor.backend.data.dto.CommentDto;
 import com.crowtor.backend.data.dto.CreateTwittDto;
 import com.crowtor.backend.data.dto.TwittFeedDto;
+import com.crowtor.backend.data.mappers.Impl.TwittToTwittFeedDtoObjectMapper;
+import com.crowtor.backend.data.mappers.Mapper;
+import com.crowtor.backend.data.models.Comment;
 import com.crowtor.backend.data.models.Person;
 import com.crowtor.backend.data.models.Tag;
 import com.crowtor.backend.data.models.Twitt;
+import com.crowtor.backend.data.repository.CommentRepository;
 import com.crowtor.backend.data.repository.PersonRepository;
 import com.crowtor.backend.data.repository.TagRepository;
 import com.crowtor.backend.data.repository.TwittRepository;
@@ -13,6 +17,7 @@ import com.crowtor.backend.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +30,16 @@ public class TwittService {
 
     private TagRepository tagRepository;
 
-    public TwittService(TwittRepository twittRepository, PersonRepository personRepository, TagRepository tagRepository) {
+    private CommentRepository commentRepository;
+
+    private TwittToTwittFeedDtoObjectMapper mapper;
+
+    public TwittService(TwittRepository twittRepository, PersonRepository personRepository, TagRepository tagRepository, CommentRepository commentRepository, TwittToTwittFeedDtoObjectMapper mapper) {
         this.twittRepository = twittRepository;
         this.personRepository = personRepository;
         this.tagRepository = tagRepository;
+        this.commentRepository = commentRepository;
+        this.mapper = mapper;
     }
 
     public void createTwitt(String nickName, CreateTwittDto createTwittDto) throws EntityNotFoundException {
@@ -79,28 +90,62 @@ public class TwittService {
         personRepository.save(person);
     }
 
+    private List<TwittFeedDto> setTagsAndComments( List<TwittFeedDto> twitts){
+        for (TwittFeedDto twittFeedDto:twitts){
+            var t = twittRepository.findById(twittFeedDto.getId()).get();
+            twittFeedDto.setTags(t.getTags());
+            twittFeedDto.setCommentSet(commentRepository.findByTwittId(twittFeedDto.getId()));
+        }
+        return twitts;
+    }
+
     public List<TwittFeedDto> findAll() {
-        return twittRepository.findAllDto();
+        var twitts =  twittRepository.findAllDto();
+        return setTagsAndComments(twitts);
     }
 
     public List<TwittFeedDto> findAllSubc(String nickName) {
         var person = personRepository.findByNickName(nickName);
-        if (person == null) throw new EntityNotFoundException("person not found!");
-        return findAll();
-//                ? twittRepository.findAllBySubscription(person.getId())
-//                : ;
+        if (person == null) throw new EntityNotFoundException("Person not found!");
+        List<TwittFeedDto> result = new ArrayList<>();
+        if (person.getSubscription().size()> 0){
+            var t = twittRepository.findTwittByAuthorIn(person.getSubscription());
+            if (t.size() != 0){
+                for (Twitt twitt:t){
+                    var twittDto = mapper.convert(twitt);
+                    if (twitt.getPersonLikes().contains(person)){
+                        twittDto.setLike(true);
+                    }else if (twitt.getPersonDisLikes().contains(person)){
+                        twittDto.setLike(true);
+                    }
+                    result.add(twittDto);
+                }
+            }
+        } else{
+            result = findAll();
+        }
+        return setTagsAndComments(result);
     }
-
     public void addComment(String nickName,CommentDto commentDto) {
         var twitt = twittRepository.findById(commentDto.getTwittId());
         var person = personRepository.findByNickName(nickName);
         if (person == null) throw new EntityNotFoundException("person not found!");
         if (!twitt.isPresent()) throw new EntityNotFoundException(commentDto.getTwittId(), Twitt.class.toString());
-        twitt.get().getPersonLikes().add(person);
-        twittRepository.save(twitt.get());
-
+        var comments = new Comment();
+        comments.setTextComment(commentDto.getComment());
+        comments.setPerson(person);
+        comments.setTwitt(twitt.get());
+        commentRepository.save(comments);
     }
 
+    public TwittFeedDto findById(long id){
+        var twitt = twittRepository.findById(id);
+        if (!twitt.isPresent()) throw new EntityNotFoundException("Twitt not found!");
+        var twittDto = mapper.convert(twitt.get());
+        twittDto.setCommentSet(commentRepository.findByTwittId(twitt.get().getId()));
+        twittDto.setTags(twitt.get().getTags());
+        return twittDto;
+    }
     public void deleteById(String nickName, long twittId) {
         var twitt = twittRepository.findById(twittId);
         var person = personRepository.findByNickName(nickName);
@@ -113,5 +158,38 @@ public class TwittService {
         if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
         twitt.get().setTextTwit(createTwittDto.getTextTwit());
         twittRepository.save(twitt.get());
+    }
+
+    public void saveTwittForUser(String nickName, long twittId) {
+        var twitt = twittRepository.findById(twittId);
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
+        person.getSaveTwitts().add(twitt.get());
+        personRepository.save(person);
+    }
+    public void deleteTwittForUser(String nickName, long twittId) {
+        var twitt = twittRepository.findById(twittId);
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
+        person.getSaveTwitts().remove(twitt.get());
+        personRepository.save(person);
+    }
+
+    public List<TwittFeedDto> getSaveTwitt(String nickName) {
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        List<TwittFeedDto> result = new ArrayList<>();
+        for (Twitt twitt:person.getSaveTwitts()){
+            var twittDto = mapper.convert(twitt);
+            if (twitt.getPersonLikes().contains(person)){
+                twittDto.setLike(true);
+            }else if (twitt.getPersonDisLikes().contains(person)){
+                twittDto.setLike(true);
+            }
+            result.add(twittDto);
+        }
+        return result;
     }
 }

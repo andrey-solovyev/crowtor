@@ -75,6 +75,14 @@ public class Person {
     )
     private List<Role> roles;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "save_twitt",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "twitt_id")
+    )
+    private Set<Twitt> saveTwitts;
+
     @PrePersist
     void onCreate() {
         this.setDateRegistration(LocalDateTime.now());
