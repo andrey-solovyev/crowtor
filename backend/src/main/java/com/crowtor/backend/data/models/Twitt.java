@@ -26,8 +26,10 @@ public class Twitt {
     @JoinColumn(name = "person_id", nullable = false)
     private Person author;
     private boolean isPremium = false;
-//    private boolean isModerate;
-//    private boolean isDeleted;
+    @Column(name = "is_moderate")
+    private boolean isModerate;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
     @Column(insertable = true, updatable = false)
     private LocalDateTime created;
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "twitts")

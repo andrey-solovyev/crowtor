@@ -63,6 +63,7 @@ public class TwittService {
                 twit.getTags().add(t);
             }
         }
+        twit.setModerate(false);
         twittRepository.save(twit);
     }
     public List<TwittFeedDto> searchTextTwitts(String text){
@@ -126,6 +127,8 @@ public class TwittService {
         }
         return setTagsAndComments(result);
     }
+
+
     public void addComment(String nickName,CommentDto commentDto) {
         var twitt = twittRepository.findById(commentDto.getTwittId());
         var person = personRepository.findByNickName(nickName);
@@ -173,8 +176,8 @@ public class TwittService {
         var person = personRepository.findByNickName(nickName);
         if (person == null) throw new EntityNotFoundException("person not found!");
         if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
-        person.getSaveTwitts().remove(twitt.get());
-        personRepository.save(person);
+        twitt.get().setDeleted(true);
+        twittRepository.save(twitt.get());
     }
 
     public List<TwittFeedDto> getSaveTwitt(String nickName) {
@@ -186,6 +189,42 @@ public class TwittService {
             if (twitt.getPersonLikes().contains(person)){
                 twittDto.setLike(true);
             }else if (twitt.getPersonDisLikes().contains(person)){
+                twittDto.setDislike(true);
+            }
+            result.add(twittDto);
+        }
+        return result;
+    }
+
+    public List<TwittFeedDto> getModerateTwitts(String nickName) {
+        var person = personRepository.findByNickName(nickName);
+        if (person == null || person.getRoles().contains("USER_ROLE")) throw new EntityNotFoundException("person not found!");
+        return twittRepository.findAllTwittWithoutModerate();
+    }
+
+    public void accessTwitt(String nickName,long twittId) {
+        var person = personRepository.findByNickName(nickName);
+        if (person == null || person.getRoles().contains("USER_ROLE")) throw new EntityNotFoundException("person not found!");
+        var twitt = twittRepository.findById(twittId);
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
+        twitt.get().setModerate(true);
+    }
+
+    public void disAccessTwitt(String nickName, long twittId) {
+        var person = personRepository.findByNickName(nickName);
+        if (person == null || person.getRoles().contains("USER_ROLE")) throw new EntityNotFoundException("person not found!");
+        var twitt = twittRepository.findById(twittId);
+        if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
+        twitt.get().setModerate(false);
+    }
+
+    public List<TwittFeedDto> getLikeTwitt(String nickName) {
+        var person = personRepository.findByNickName(nickName);
+        if (person == null) throw new EntityNotFoundException("person not found!");
+        List<TwittFeedDto> result = new ArrayList<>();
+        for (Twitt twitt:person.getLikes()){
+            var twittDto = mapper.convert(twitt);
+            if (twitt.getPersonLikes().contains(person)){
                 twittDto.setLike(true);
             }
             result.add(twittDto);

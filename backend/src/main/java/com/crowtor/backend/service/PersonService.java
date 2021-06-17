@@ -1,6 +1,7 @@
 package com.crowtor.backend.service;
 
 import com.crowtor.backend.data.dto.PersonDto;
+import com.crowtor.backend.data.dto.TwittFeedDto;
 import com.crowtor.backend.data.dto.securutyDto.AuthInfoDto;
 import com.crowtor.backend.data.dto.securutyDto.LoginUserDto;
 import com.crowtor.backend.data.dto.securutyDto.RegistPersonDto;
@@ -125,7 +126,11 @@ public class PersonService {
         var person = personRepository.findByNickName(nickName.toLowerCase());
         if (person == null) throw new EntityNotFoundException("User not found");
         var personDto = mapper.convert(person, PersonDto.class);
-        personDto.setTwitts(twittRepository.findAllTwittsFromUser(person.getId()));
+        if (current!=null && current.getId() != person.getId()){
+                personDto.setTwitts(twittRepository.findAllDtoForCurrentAndAuthor(current,person.getId()));
+        } else{
+            personDto.setTwitts(twittRepository.findAllTwittsFromUser(person.getId()));
+        }
         if (current != null && person.getSubscribers().contains(current)) {
             personDto.setIsSubscriber(true);
         }

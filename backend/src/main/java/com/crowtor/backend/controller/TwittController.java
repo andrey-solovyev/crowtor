@@ -103,7 +103,30 @@ public class TwittController {
 
     @RequestMapping(method = POST, path = "/getSaveTwitt")
     public ResponseEntity<List<TwittFeedDto>> editTwitt(Authentication authentication) {
-        if (authentication.isAuthenticated()) return null;
+        if (!authentication.isAuthenticated()) return null;
         return new ResponseEntity<>(twittService.getSaveTwitt(authentication.getName()), HttpStatus.OK);
+    }
+
+
+    @RequestMapping(method = POST, path = "/getLikeTwitt")
+    public ResponseEntity<List<TwittFeedDto>> getLikeTwitt(Authentication authentication) {
+        if (!authentication.isAuthenticated()) return null;
+        return new ResponseEntity<>(twittService.getLikeTwitt(authentication.getName()), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = POST, path = "/moderate")
+    public ResponseEntity<List<TwittFeedDto>> moderate(Authentication authentication) {
+        if (!authentication.isAuthenticated()) return null;
+        return new ResponseEntity<>(twittService.getModerateTwitts(authentication.getName()), HttpStatus.OK);
+    }
+    @RequestMapping(method = POST, path = "/accessTwitt")
+    public void accessTwitt(Authentication authentication,@RequestParam long twittId) {
+        if (!authentication.isAuthenticated()) return;
+        twittService.accessTwitt(authentication.getName(),twittId);
+    }
+    @RequestMapping(method = POST, path = "/disAccessTwitt")
+    public void disAccessTwitt(Authentication authentication,@RequestParam long twittId) {
+        if (!authentication.isAuthenticated()) return;
+        twittService.disAccessTwitt(authentication.getName(),twittId);
     }
 }
