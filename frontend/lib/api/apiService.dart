@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:crowtor/components/MySnackBar.dart';
 import 'package:crowtor/main.dart';
+import 'package:crowtor/model/CommentModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
@@ -173,10 +174,12 @@ class APIService {
     final response = await http.post(
       uri,
       headers: {
-        'Authorization': 'Bearer $token',
+        // 'Authorization': 'Bearer $token',
         "Content-Type": "application/json"
       },
     );
+
+    print(response.statusCode);
 
     log(response);
 
@@ -232,6 +235,26 @@ class APIService {
       return DisLikeResponseModel.fromJson({"message": "Удачно"});
     } else {
       return DisLikeResponseModel.fromJson({"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<CommentResponseModel> comment(CommentRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/comment");
+    final response = await http.post(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(requestModel.toJson()));
+
+
+    log(response);
+
+    if (response.statusCode == 201) {
+      return CommentResponseModel.fromJson({"message": "Твит успешно отправлен"});
+    } else {
+      return CommentResponseModel.fromJson({"message": "Что то пошло не так"});
     }
   }
 

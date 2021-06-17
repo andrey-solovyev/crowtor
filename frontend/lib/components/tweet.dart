@@ -2,6 +2,7 @@ import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
 import 'package:crowtor/model/likeModel.dart';
+import 'package:crowtor/screens/CommentScreen.dart';
 import 'package:crowtor/screens/profileScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -76,6 +77,7 @@ class _TweetState extends State<Tweet> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CommentScreen(tweet: widget.tweet,)));
           print("OPEN TWEET");
         },
         child: Container(
@@ -93,7 +95,6 @@ class _TweetState extends State<Tweet> {
               children: [
                 GestureDetector(
                     onTap: () {
-
                       if (widget.tweet.nickName != APIService.currUserNickName){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile(nickName: widget.tweet.nickName,)));
                         print("OPEN OTHER USER PROFILE" + widget.tweet.nickName + " " + APIService.currUserNickName);
@@ -161,6 +162,8 @@ class _TweetState extends State<Tweet> {
                     IconButton(
                       icon: Icon(Icons.comment, color: Colors.grey[700],),
                       onPressed: () {
+                        print(widget.tweet.nickName);
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CommentScreen(tweet: widget.tweet,)));
                         print("comment");
                       },
                     ),
