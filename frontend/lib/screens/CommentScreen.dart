@@ -66,7 +66,7 @@ class _CommentScreenState extends State<CommentScreen> {
                     minLines: 2,
                     maxLines: 10,
                     decoration: InputDecoration(
-                        hintText: "Что нового?",
+                        hintText: "Ваш гениальный комментарий",
                         border: OutlineInputBorder(
                             borderRadius:
                             BorderRadius.all(new Radius.circular(12.0))),
@@ -126,7 +126,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   ),
 
 
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
                 ),
               ],
             ),

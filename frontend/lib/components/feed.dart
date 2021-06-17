@@ -26,7 +26,9 @@ class _FeedState extends State<Feed> {
       future: apiService.getAllTweets(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          print("datain");
+
+          tweets.clear();
+
           FeedResponseModel responseModel = snapshot.data;
           for (int i = 0; i < responseModel.tweets.length; i++){
             tweets.add(Tweet(tweet: responseModel.tweets[i],));

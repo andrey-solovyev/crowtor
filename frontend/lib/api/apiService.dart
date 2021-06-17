@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crowtor/components/MySnackBar.dart';
 import 'package:crowtor/main.dart';
 import 'package:crowtor/model/CommentModel.dart';
+import 'package:crowtor/model/SearchUserModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
@@ -174,7 +175,7 @@ class APIService {
     final response = await http.post(
       uri,
       headers: {
-        // 'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $token',
         "Content-Type": "application/json"
       },
     );
@@ -263,7 +264,7 @@ class APIService {
     isAuthorized();
     Uri uri = Uri.parse(serverUrl +
         apiVersion +
-        "person/subscribe?subscribeUser=" +
+        "/person/subscribe?subscribeUser=" +
         requestModel.subscribeUser.toString());
 
     final response = await http.post(
@@ -287,13 +288,12 @@ class APIService {
     }
   }
 
-  Future<UbSubscribeResponseModel> unSubscribe(
-      UbSubscribeRequestModel requestModel) async {
+  Future<UnSubscribeResponseModel> unSubscribe(
+      UnSubscribeRequestModel requestModel) async {
     isAuthorized();
     Uri uri = Uri.parse(serverUrl +
         apiVersion +
-        "person/subscribe?subscribeUser=" +
-        requestModel.subscribeUser.toString());
+        "/person/unSubscribe?subscribeUser=" + requestModel.subscribeUser.toString());
 
     final response = await http.post(
       uri,
@@ -303,11 +303,33 @@ class APIService {
       },
     );
 
+    log(response);
+
     if (response.statusCode == 201) {
-      return UbSubscribeResponseModel.fromJson({"message": "Удачно"});
+      return UnSubscribeResponseModel.fromJson({"message": "Удачно"});
     } else {
-      return UbSubscribeResponseModel.fromJson(
+      return UnSubscribeResponseModel.fromJson(
           {"message": "Что то пошло не так"});
     }
+  }
+
+  Future<SearchUserResponseModel> searchUser(
+      SearchUserRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/search?nickName=" +
+        requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return SearchUserResponseModel.fromJson(json.decode(response.body));
   }
 }

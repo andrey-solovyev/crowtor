@@ -33,7 +33,9 @@ class _CommentState extends State<Comment> {
     // return Text(widget.nickName + " " + widget.commentText);
     return GestureDetector(
         onTap: () {
-          // print("OPEN TWEET");
+          if (widget.nickName != APIService.currUserNickName){
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile(nickName: widget.nickName,)));
+          }
         },
         child: Container(
             margin: EdgeInsets.fromLTRB(12.0, 0, 12.0, 0),
@@ -50,9 +52,6 @@ class _CommentState extends State<Comment> {
               children: [
                 new Container(
                   child:
-
-
-
                   FutureBuilder<UserResponseModel>(
                     future: apiService.getUserByNickName(
                         UserRequestModelByNickName(nickName: widget.nickName)),
@@ -82,7 +81,7 @@ class _CommentState extends State<Comment> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+                  padding: EdgeInsets.fromLTRB(0, 6, 0, 12),
                   child: Text(
                     widget.commentText,
                   ),

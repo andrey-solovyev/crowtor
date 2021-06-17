@@ -37,7 +37,8 @@ class UserResponseModel {
       this.subscription,
       this.subscribers,
       this.dateRegistration,
-      this.twitts});
+      this.twitts,
+      this.isSubscribed});
 
   final int id;
   final String birthday;
@@ -47,6 +48,7 @@ class UserResponseModel {
   final String email;
   final bool isDeleted;
   final bool isPremium;
+  final bool isSubscribed;
 
   final int subscription;
   final int subscribers;
@@ -71,6 +73,8 @@ class UserResponseModel {
         subscription: json['subscription'] != null ? json['subscription'] : 0,
         isDeleted: json['isDeleted'] != null ? json['isDeleted'] : false,
         twitts: json['twitts'] != null ? json['twitts'] : [],
-        isPremium: json['isPremium'] != null ? json['isPremium'] : false);
+        isPremium: json['isPremium'] != null ? json['isPremium'] : false,
+        isSubscribed: json['isSubscribed'] != null ? json['isSubscribed'] : false
+    );
   }
 }
