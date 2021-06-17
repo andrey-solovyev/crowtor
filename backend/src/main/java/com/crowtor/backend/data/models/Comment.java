@@ -1,6 +1,7 @@
 package com.crowtor.backend.data.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,11 +20,11 @@ public class Comment {
     @NotNull
     @NotBlank
     private String textComment;
-    @ManyToOne
-    @JoinColumn(name="person_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
     private Person person;
-    @ManyToOne
-    @JoinColumn(name="twit_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "twit_id", nullable = false)
     private Twitt twitt;
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")

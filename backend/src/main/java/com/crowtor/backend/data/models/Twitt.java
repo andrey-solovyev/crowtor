@@ -22,19 +22,22 @@ public class Twitt {
     @NotBlank
     private String textTwit;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="person_id", nullable=false)
+    @JoinColumn(name = "person_id", nullable = false)
     private Person author;
-    private boolean isPremium=false;
+    private boolean isPremium = false;
     @Column(insertable = true, updatable = false)
     private LocalDateTime created;
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "twitts")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "twitts")
     private Set<Tag> tags;
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "likes")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "likes")
     private Set<Person> personLikes;
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "dislikes")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "dislikes")
     private Set<Person> personDisLikes;
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="twitt")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "twitt")
     private Set<Comment> comments;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "saveTwitts")
+    private Set<Person> personsSave;
+
     @PrePersist
     void onCreate() {
         this.setCreated(LocalDateTime.now());

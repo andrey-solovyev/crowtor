@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(POST,"/api/v1/twitt/findAllTwitt").permitAll()
                 .antMatchers(POST,"/api/v1/twitt/*").authenticated()
                 .antMatchers(POST,"/api/v1/person/*").authenticated()
                 .antMatchers(GET,"/api/v1/twitt/*").permitAll()
