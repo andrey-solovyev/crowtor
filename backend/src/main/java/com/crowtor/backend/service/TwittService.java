@@ -116,13 +116,13 @@ public class TwittService {
                     if (twitt.getPersonLikes().contains(person)){
                         twittDto.setLike(true);
                     }else if (twitt.getPersonDisLikes().contains(person)){
-                        twittDto.setLike(true);
+                        twittDto.setDislike(true);
                     }
                     result.add(twittDto);
                 }
             }
         } else{
-            result = findAll();
+            result = twittRepository.findAllDtoAuth(person);
         }
         return setTagsAndComments(result);
     }

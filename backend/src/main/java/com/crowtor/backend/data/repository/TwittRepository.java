@@ -20,6 +20,12 @@ public interface TwittRepository extends JpaRepository<Twitt,Long> {
             "(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName,t.author.firstName,t.author.lastName)" +
             " from Twitt t order by t.created")
     List<TwittFeedDto> findAllDto();
+
+    @Query(value = "select new com.crowtor.backend.data.dto.TwittFeedDto" +
+            "(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName,t.author.firstName,t.author.lastName," +
+            "(case when :person = li then true else false end),(case when :person = dis then true else false end))" +
+            " from Twitt t join t.personLikes li join t.personDisLikes dis order by t.created")
+    List<TwittFeedDto> findAllDtoAuth(@Param("person") Person person);
 //(select new com.crowtor.backend.data.dto.CommentFeedDto(c.textComment,c.person.nickName) from Comment c where c.twitt.id = t.id)
     @Query("select new com.crowtor.backend.data.dto.TwittFeedDto" +
             "(t.id,t.textTwit,t.isPremium,t.personLikes.size,t.personDisLikes.size,t.created,t.author.nickName,t.author.firstName,t.author.lastName," +
