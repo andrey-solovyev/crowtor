@@ -29,11 +29,11 @@ public class PersonController {
 
     @RequestMapping(method = POST, path = "/currentUser")
     public ResponseEntity<PersonDto> currentUser(Authentication authentication) {
-        return new ResponseEntity<>(personService.getUserByNickName(authentication.getName()),HttpStatus.OK);
+        return new ResponseEntity<>(personService.getUserByNickName(authentication.getName(),null),HttpStatus.OK);
     }
     @RequestMapping(method = GET,path = "/getByNickName")
-    public ResponseEntity<PersonDto> getByNickName(@RequestParam String nickName) {
-        return new ResponseEntity<>(personService.getUserByNickName(nickName),HttpStatus.OK);
+    public ResponseEntity<PersonDto> getByNickName(Authentication authentication,@RequestParam String nickName) {
+        return new ResponseEntity<>(personService.getUserByNickName(nickName,authentication),HttpStatus.OK);
     }
     @RequestMapping(method = GET,path = "/getSubscribe")
     public ResponseEntity<List<PersonDto>> getSubscribeList(@RequestParam String nickName) {
@@ -55,8 +55,8 @@ public class PersonController {
     }
 
     @RequestMapping(method = GET, path = "/search")
-    public ResponseEntity<List<PersonDto>> searchPersons(@RequestParam("nickName") String nickname) {
-        return new ResponseEntity<>(personService.findPersonByNickNameAll(nickname),HttpStatus.OK);
+    public ResponseEntity<List<PersonDto>> searchPersons(Authentication authentication,@RequestParam("nickName") String nickname) {
+        return new ResponseEntity<>(personService.findPersonByNickNameAll(nickname, authentication),HttpStatus.OK);
     }
 
 }

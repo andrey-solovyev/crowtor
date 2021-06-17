@@ -15,6 +15,7 @@ import com.crowtor.backend.exceptions.InvalidAuthException;
 import com.crowtor.backend.security.JwtSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,14 +49,25 @@ public class PersonService {
         }
         return person;
     }
-    public List<PersonDto> findPersonByNickNameAll(String nickName){
+
+    public List<PersonDto> findPersonByNickNameAll(String nickName, Authentication authentication) {
         List<PersonDto> result = new ArrayList<>();
-        var persons = personRepository.findByNickNameAll(nickName+"%");
-        for (Person p:persons){
-            result.add(mapper.convert(p,PersonDto.class));
+        Person person = null;
+        if (authentication != null) {
+            person = personRepository.findByNickName(authentication.getName());
+        }
+        var persons = personRepository.findByNickNameAll(nickName + "%");
+        for (Person p : persons) {
+            var q = mapper.convert(p, PersonDto.class);
+            if (person != null && p.getSubscribers().contains(person)) {
+                q.setIsSubscriber(true);
+
+            }
+            result.add(q);
         }
         return result;
     }
+
     public Person findPersonByEmail(String email) throws EntityNotFoundException {
         var person = personRepository.findByEmail(email);
         if (person == null) {
@@ -63,10 +75,13 @@ public class PersonService {
         }
         return person;
     }
+
     public void createNewPerson(RegistPersonDto registPersonDto) throws InvalidAuthException {
         var per = new Person();
-        if (personRepository.existsByEmail(registPersonDto.getEmail())) throw new InvalidAuthException("Email is exists!");
-        else if (personRepository.existsByNickName(registPersonDto.getNickName())) throw new InvalidAuthException("Nickname is exists!");
+        if (personRepository.existsByEmail(registPersonDto.getEmail()))
+            throw new InvalidAuthException("Email is exists!");
+        else if (personRepository.existsByNickName(registPersonDto.getNickName()))
+            throw new InvalidAuthException("Nickname is exists!");
         per.setBirthday(registPersonDto.getBirthday());
         per.setFirstName(registPersonDto.getFirstName());
         per.setLastName(registPersonDto.getLastName());
@@ -79,39 +94,49 @@ public class PersonService {
         per.setRoles(new ArrayList<Role>(roles));
         personRepository.save(per);
     }
+
     public void subscribe(String nickName, Long subscribeIdUser) {
         Person person = personRepository.findByNickName(nickName);
         person.getSubscription().add(personRepository.getOne(subscribeIdUser));
         personRepository.save(person);
     }
+
     public void unSubscribe(String nickName, Long subscribeIdUser) {
         Person person = personRepository.findByNickName(nickName);
         person.getSubscription().remove(personRepository.getOne(subscribeIdUser));
         personRepository.save(person);
     }
+
     public AuthInfoDto loginPerson(LoginUserDto loginUserDto) throws EntityNotFoundException {
         var user = findPersonByEmail(loginUserDto.getEmail());
         if (passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword())) {
-            var token = jwtSupplier.createTokenForUser(user.getId(),user.getNickName(), user.getRoles());
+            var token = jwtSupplier.createTokenForUser(user.getId(), user.getNickName(), user.getRoles());
             return new AuthInfoDto(token);
-        } else{
+        } else {
             throw new EntityNotFoundException("Invalid login or password");
         }
     }
 
-    public PersonDto getUserByNickName(String nickName) {
+    public PersonDto getUserByNickName(String nickName, Authentication authentication) {
+        Person current = null;
+        if (authentication != null) {
+            current = personRepository.findByNickName(authentication.getName());
+        }
         var person = personRepository.findByNickName(nickName.toLowerCase());
         if (person == null) throw new EntityNotFoundException("User not found");
-        var personDto=mapper.convert(person,PersonDto.class);
+        var personDto = mapper.convert(person, PersonDto.class);
         personDto.setTwitts(twittRepository.findAllTwittsFromUser(person.getId()));
+        if (current != null && person.getSubscribers().contains(current)) {
+            personDto.setIsSubscriber(true);
+        }
         return personDto;
     }
 
     public List<PersonDto> getSubscriberListUsers(String nickName) {
         var person = personRepository.findByNickName(nickName.toLowerCase());
         if (person == null) throw new EntityNotFoundException("User not found");
-        var personsDto=new ArrayList<PersonDto>();
-        for (Person p:person.getSubscribers()) {
+        var personsDto = new ArrayList<PersonDto>();
+        for (Person p : person.getSubscribers()) {
             var personDto = new PersonDto();
             personDto.setNickName(p.getNickName());
             person.setFirstName(p.getFirstName());
@@ -120,11 +145,12 @@ public class PersonService {
         }
         return personsDto;
     }
+
     public List<PersonDto> getSubscriptionListUsers(String nickName) {
         var person = personRepository.findByNickName(nickName.toLowerCase());
         if (person == null) throw new EntityNotFoundException("User not found");
-        var personsDto=new ArrayList<PersonDto>();
-        for (Person p:person.getSubscription()) {
+        var personsDto = new ArrayList<PersonDto>();
+        for (Person p : person.getSubscription()) {
             var personDto = new PersonDto();
             personDto.setNickName(p.getNickName());
             person.setFirstName(p.getFirstName());
