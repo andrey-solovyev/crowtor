@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -25,6 +26,8 @@ public class Twitt {
     @JoinColumn(name = "person_id", nullable = false)
     private Person author;
     private boolean isPremium = false;
+//    private boolean isModerate;
+//    private boolean isDeleted;
     @Column(insertable = true, updatable = false)
     private LocalDateTime created;
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "twitts")
