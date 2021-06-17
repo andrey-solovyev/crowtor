@@ -16,7 +16,6 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 14
