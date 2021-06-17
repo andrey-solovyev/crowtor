@@ -50,7 +50,7 @@ class _StartScreenState extends State<StartScreen> {
                                         MaterialPageRoute(builder: (context) {
                                       return StartScreen(
                                         text:
-                                            'Данное приложение являеться аналогом твиттера и называется crowtor',
+                                            'Данное приложение является аналогом твиттера и называется crowtor',
                                         isFinalScreen: true,
                                       );
                                     }));

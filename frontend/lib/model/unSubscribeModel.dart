@@ -1,5 +1,5 @@
-class UbSubscribeRequestModel {
-  UbSubscribeRequestModel({this.subscribeUser});
+class UnSubscribeRequestModel {
+  UnSubscribeRequestModel({this.subscribeUser});
 
   int subscribeUser;
 
@@ -11,12 +11,12 @@ class UbSubscribeRequestModel {
   }
 }
 
-class UbSubscribeResponseModel {
+class UnSubscribeResponseModel {
   final String message;
 
-  UbSubscribeResponseModel({this.message});
+  UnSubscribeResponseModel({this.message});
 
-  factory UbSubscribeResponseModel.fromJson(Map<String, dynamic> json){
-    return UbSubscribeResponseModel(message: json['message'] != null ? json['message'] : "");
+  factory UnSubscribeResponseModel.fromJson(Map<String, dynamic> json){
+    return UnSubscribeResponseModel(message: json['message'] != null ? json['message'] : "");
   }
 }

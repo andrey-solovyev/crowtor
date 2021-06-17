@@ -1,11 +1,8 @@
 import 'package:crowtor/api/apiService.dart';
-import 'package:crowtor/components/feed.dart';
 import 'package:crowtor/components/tweet.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/feedModel.dart';
-import 'package:crowtor/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key key}) : super(key: key);
@@ -27,12 +24,14 @@ class _MyProfileState extends State<MyProfile> {
     APIService apiService = new APIService();
 
     List<Widget> tweets = [];
-
     return FutureBuilder<UserResponseModel>(
       future: apiService.getCurrentUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           UserResponseModel responseModel = snapshot.data;
+
+
+          tweets.clear();
 
           FeedResponseModel feedResponseModel =
               FeedResponseModel.fromJson(snapshot.data.twitts);

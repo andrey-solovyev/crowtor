@@ -2,6 +2,7 @@ import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
 import 'package:crowtor/model/likeModel.dart';
+import 'package:crowtor/screens/CommentScreen.dart';
 import 'package:crowtor/screens/profileScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,11 @@ class _TweetState extends State<Tweet> {
     super.initState();
     _amountLikes = widget.tweet.amountLikes;
     _amountDisLikes = widget.tweet.amountDisLikes;
+    isLiked = widget.tweet.like;
+    isDisliked = widget.tweet.dislike;
+
+
+    print(widget.tweet.id.toString() + " " + widget.tweet.textTwit + " " + isLiked.toString() + " " + isDisliked.toString());
   }
 
   void _like() {
@@ -74,7 +80,7 @@ class _TweetState extends State<Tweet> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile(nickName: widget.tweet.nickName,)));
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CommentScreen(tweet: widget.tweet,)));
           print("OPEN TWEET");
         },
         child: Container(
@@ -92,7 +98,10 @@ class _TweetState extends State<Tweet> {
               children: [
                 GestureDetector(
                     onTap: () {
-                      print("OPEN OTHER USER PROFILE");
+                      if (widget.tweet.nickName != APIService.currUserNickName){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Profile(nickName: widget.tweet.nickName,)));
+                        print("OPEN OTHER USER PROFILE" + widget.tweet.nickName + " " + APIService.currUserNickName);
+                      }
                     },
                     child: new Container(
                       child: new Column(
@@ -156,6 +165,8 @@ class _TweetState extends State<Tweet> {
                     IconButton(
                       icon: Icon(Icons.comment, color: Colors.grey[700],),
                       onPressed: () {
+                        print(widget.tweet.nickName);
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CommentScreen(tweet: widget.tweet,)));
                         print("comment");
                       },
                     ),

@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:crowtor/components/MySnackBar.dart';
 import 'package:crowtor/main.dart';
+import 'package:crowtor/model/CommentModel.dart';
+import 'package:crowtor/model/SearchUserModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
@@ -11,25 +14,39 @@ import 'package:crowtor/model/registrationModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:crowtor/screens/loginScreen.dart';
+import 'package:crowtor/screens/startScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class APIService {
   static String token = "";
-  static int currUserId = 1;
+  static String currUserNickName;
 
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
 
-  void isAuthorized(){
+  void log(response) {
+    if (token != "") {
+      print("token: " + token);
+    }
+    print("body: " + response.body);
+    print("------------------------------------------------------------------"
+        "---------------------------------------------------------------------"
+        "---------------");
+  }
+
+  void isAuthorized() {
     if (token == null || token.isEmpty) {
-      // return MyApp.navigatorKey.currentState.pushNamedAndRemoveUntil("/login", (route) => false);
-      print("qwe");
-      Get.to(LoginScreen());
-      // return MyApp.navigatorKey.currentState.pushNamed("/login");
-      // pushNamedAndRemoveUntil("/login", (route) => false);
+      Future.microtask(() {
+        Get.offAllNamed('/login');
+        Get.snackbar(
+          "Авторизация",
+          "Для продолжения водите или зарегистрируйтесь",
+        );
+      });
     }
   }
 
@@ -39,13 +56,21 @@ class APIService {
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestModel.toJson()));
+
+    log(response);
+
     if (response.statusCode == 200 || response.statusCode == 400) {
       token = json.decode(response.body)["token"];
-
+      getCurrentUser();
       return LoginResponseModel.fromJson(json.decode(response.body));
     } else {
-      return LoginResponseModel.fromJson(
-          {"error": "Не удалось загрузить данные"});
+      if (json.decode(response.body)["message"] ==
+          "Invalid login or password") {
+        return LoginResponseModel.fromJson(
+            {"error": "Не верный логин или пароль"});
+      }
+
+      return LoginResponseModel.fromJson({"error": "Что то пошло не так..."});
     }
   }
 
@@ -53,14 +78,14 @@ class APIService {
       RegistrationRequestModel requestModel) async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/security/register");
 
-    print(requestModel.toJson());
+    // print(requestModel.toJson());
 
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestModel.toJson()));
 
     // print(json.decode(response.body));
-    print(response.statusCode);
+    log(response);
 
     if (response.statusCode == 201) {
       return RegistrationResponseModel.fromJson(
@@ -70,14 +95,23 @@ class APIService {
     if (response.statusCode == 200 || response.statusCode == 400) {
       return RegistrationResponseModel.fromJson(json.decode(response.body));
     } else {
+      if (json.decode(response.body)['message'] == "Email is exists!") {
+        return RegistrationResponseModel.fromJson(
+            {"error": "Пользователь с данным email уже зарегистрирован."});
+      }
+
+      if (json.decode(response.body)['message'] == "Nickname is exists!") {
+        return RegistrationResponseModel.fromJson(
+            {"error": "Данный никнейм уже занят."});
+      }
+
       return RegistrationResponseModel.fromJson(
           {"error": "Возникла проблема, повторите попытку позже"});
     }
   }
 
   Future<UserResponseModel> getCurrentUser() async {
-    // Get.to(LoginScreen());
-    // isAuthorized();
+    isAuthorized();
 
     Uri uri = Uri.parse(serverUrl + apiVersion + "/person/currentUser");
 
@@ -89,11 +123,19 @@ class APIService {
       },
     );
 
+    log(response);
+
+    currUserNickName = json.decode(response.body)["nickName"];
+
     return UserResponseModel.fromJson(json.decode(response.body));
   }
 
-  Future<UserResponseModel> getUserByNickName(UserRequestModelByNickName requestModel) async {
-    Uri uri = Uri.parse(serverUrl + apiVersion + "/person/getByNickName?nickName=" + requestModel.nickName);
+  Future<UserResponseModel> getUserByNickName(
+      UserRequestModelByNickName requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/getByNickName?nickName=" +
+        requestModel.nickName);
 
     final response = await http.get(
       uri,
@@ -103,10 +145,13 @@ class APIService {
       },
     );
 
+    log(response);
+
     return UserResponseModel.fromJson(json.decode(response.body));
   }
 
   Future<TweetResponseModel> createTweet(TweetRequestModel requestModel) async {
+    isAuthorized();
     Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/createTwit");
     final response = await http.post(uri,
         headers: {
@@ -115,8 +160,7 @@ class APIService {
         },
         body: jsonEncode(requestModel.toJson()));
 
-    print(token);
-    print(response.body);
+    log(response);
 
     if (response.statusCode == 201) {
       return TweetResponseModel.fromJson({"message": "Твит успешно отправлен"});
@@ -136,11 +180,22 @@ class APIService {
       },
     );
 
+    print(response.statusCode);
+
+    log(response);
+
+    // print("token: " + token);
+    // print(json.decode(response.body));
+
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
 
   Future<LikeResponseModel> likeTweet(LikeRequestModel requestModel) async {
-    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/like?twittId=" + requestModel.twittId.toString());
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/twitt/like?twittId=" +
+        requestModel.twittId.toString());
 
     final response = await http.post(
       uri,
@@ -150,15 +205,22 @@ class APIService {
       },
     );
 
+    log(response);
+
     if (response.statusCode == 201) {
-      return LikeResponseModel.fromJson({"message":"Удачно"});
+      return LikeResponseModel.fromJson({"message": "Удачно"});
     } else {
-      return LikeResponseModel.fromJson({"message":"Что то пошло не так"});
+      return LikeResponseModel.fromJson({"message": "Что то пошло не так"});
     }
   }
 
-  Future<DisLikeResponseModel> disLikeTweet(DisLikeRequestModel requestModel) async {
-    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/dislike?twittId=" + requestModel.twittId.toString());
+  Future<DisLikeResponseModel> disLikeTweet(
+      DisLikeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/twitt/dislike?twittId=" +
+        requestModel.twittId.toString());
 
     final response = await http.post(
       uri,
@@ -168,15 +230,42 @@ class APIService {
       },
     );
 
+    log(response);
+
     if (response.statusCode == 201) {
-      return DisLikeResponseModel.fromJson({"message":"Удачно"});
+      return DisLikeResponseModel.fromJson({"message": "Удачно"});
     } else {
-      return DisLikeResponseModel.fromJson({"message":"Что то пошло не так"});
+      return DisLikeResponseModel.fromJson({"message": "Что то пошло не так"});
     }
   }
 
-  Future<SubscribeResponseModel> subscribe(SubscribeRequestModel requestModel) async {
-    Uri uri = Uri.parse(serverUrl + apiVersion + "person/subscribe?subscribeUser=" + requestModel.subscribeUser.toString());
+  Future<CommentResponseModel> comment(CommentRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/comment");
+    final response = await http.post(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(requestModel.toJson()));
+
+
+    log(response);
+
+    if (response.statusCode == 201) {
+      return CommentResponseModel.fromJson({"message": "Твит успешно отправлен"});
+    } else {
+      return CommentResponseModel.fromJson({"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<SubscribeResponseModel> subscribe(
+      SubscribeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/subscribe?subscribeUser=" +
+        requestModel.subscribeUser.toString());
 
     final response = await http.post(
       uri,
@@ -186,18 +275,25 @@ class APIService {
       },
     );
 
-    print(response.statusCode);
-    print(response.body);
+    log(response);
+
+    // print(response.statusCode);
+    // print(response.body);
 
     if (response.statusCode == 201) {
-      return SubscribeResponseModel.fromJson({"message":"Удачно"});
+      return SubscribeResponseModel.fromJson({"message": "Удачно"});
     } else {
-      return SubscribeResponseModel.fromJson({"message":"Что то пошло не так"});
+      return SubscribeResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
     }
   }
 
-  Future<UbSubscribeResponseModel> unSubscribe(UbSubscribeRequestModel requestModel) async {
-    Uri uri = Uri.parse(serverUrl + apiVersion + "person/subscribe?subscribeUser=" + requestModel.subscribeUser.toString());
+  Future<UnSubscribeResponseModel> unSubscribe(
+      UnSubscribeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/unSubscribe?subscribeUser=" + requestModel.subscribeUser.toString());
 
     final response = await http.post(
       uri,
@@ -207,11 +303,33 @@ class APIService {
       },
     );
 
+    log(response);
+
     if (response.statusCode == 201) {
-      return UbSubscribeResponseModel.fromJson({"message":"Удачно"});
+      return UnSubscribeResponseModel.fromJson({"message": "Удачно"});
     } else {
-      return UbSubscribeResponseModel.fromJson({"message":"Что то пошло не так"});
+      return UnSubscribeResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
     }
   }
 
+  Future<SearchUserResponseModel> searchUser(
+      SearchUserRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/search?nickName=" +
+        requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return SearchUserResponseModel.fromJson(json.decode(response.body));
+  }
 }

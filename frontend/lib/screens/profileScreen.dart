@@ -80,6 +80,7 @@ class _ProfileState extends State<Profile> {
                             child: Text("Подписаться"),
                             onPressed: () {
                               apiService.subscribe(SubscribeRequestModel(subscribeUser: responseModel.id)).then((value){
+                                print("responseModel.id = " + responseModel.id.toString());
                                   print(value);
                               });
                                   print("ПОДПИСАТЬСЯЯЯЯЯ");
