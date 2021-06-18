@@ -95,7 +95,7 @@ public class TwittService {
         if (!twitt.isPresent()) throw new EntityNotFoundException(twittId, Twitt.class.toString());
         if (person == null) throw new EntityNotFoundException("person not found!");
         if (person.getDislikes().contains(twitt.get())) {
-            person.getLikes().remove(twitt.get());
+            person.getDislikes().remove(twitt.get());
         } else {
             person.getDislikes().add(twitt.get());
         }
