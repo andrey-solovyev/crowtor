@@ -425,4 +425,49 @@ class APIService {
 
     return SearchUserResponseModel.fromJson(json.decode(response.body));
   }
+
+  Future<SearchUserResponseModel> getSubscribers(
+      SearchUserRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/getSubscribe?nickName=" +
+        requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return SearchUserResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<SearchUserResponseModel> getSubscriptions(
+      SearchUserRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/getSubscription?nickName=" +
+        requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return SearchUserResponseModel.fromJson(json.decode(response.body));
+  }
+
+  void logoutUser(){
+    token = "";
+    currUserNickName = "";
+  }
 }

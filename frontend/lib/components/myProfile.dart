@@ -3,6 +3,7 @@ import 'package:crowtor/components/tweet.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/feedModel.dart';
 import 'package:crowtor/screens/ModerationScreen.dart';
+import 'package:crowtor/screens/SubsScreen.dart';
 import 'package:crowtor/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,6 @@ class _MyProfileState extends State<MyProfile> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           UserResponseModel responseModel = snapshot.data;
-
 
           tweets.clear();
 
@@ -92,31 +92,37 @@ class _MyProfileState extends State<MyProfile> {
                             )
                           ],
                         )),
-                    isModerator ? Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      child: SizedBox(
-                        child: ElevatedButton(
-                          child: Text("Модерация"),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ModerationScreen()));
-                            print("Страница модерации");
-                          },
-                        ),
-                        width: double.infinity,
-                      ),
-                    ) : Container(),
+                    isModerator
+                        ? Padding(
+                            padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                            child: SizedBox(
+                              child: ElevatedButton(
+                                child: Text("Модерация"),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              ModerationScreen()));
+                                  print("Страница модерации");
+                                },
+                              ),
+                              width: double.infinity,
+                            ),
+                          )
+                        : Container(),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: SizedBox(
                         child: ElevatedButton(
-                          child: Text("Выйдти"),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
-                          },
+                            child: Text("Выйдти"),
+                            onPressed: () {
+                              apiService.logoutUser();
+                              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                            },
                             style: ElevatedButton.styleFrom(
                               primary: Colors.black,
-                            )
-                        ),
+                            )),
                         width: double.infinity,
                       ),
                     ),
@@ -125,16 +131,39 @@ class _MyProfileState extends State<MyProfile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              responseModel.subscribers.toString() +
-                                  " подписчиков",
-                              style: TextStyle(fontSize: 20),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            SubsScreen(
+                                              isSubscribers: true,
+                                            )));
+                              },
+                              child: Text(
+                                responseModel.subscribers.toString() +
+                                    " подписчиков",
+                                style: TextStyle(fontSize: 20),
+                              ),
                             ),
-                            Text(
-                              responseModel.subscription.toString() +
-                                  " подписок",
-                              style: TextStyle(fontSize: 20),
-                            )
+
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            SubsScreen(
+                                              isSubscribers: false,
+                                            )));
+                              },
+                              child: Text(
+                                responseModel.subscription.toString() +
+                                    " подписок",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
                           ],
                         )),
                     Padding(
