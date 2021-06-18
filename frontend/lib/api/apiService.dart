@@ -16,8 +16,6 @@ import 'package:crowtor/model/registrationModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:crowtor/screens/loginScreen.dart';
-import 'package:crowtor/screens/startScreen.dart';
-import 'package:crowtor/services/AnalyticsService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -33,13 +31,13 @@ class APIService {
   final String apiVersion = "/v1";
 
   void log(response) {
-    if (token != "") {
-      print("token: " + token);
-    }
-    print("body: " + response.body);
-    print("------------------------------------------------------------------"
-        "---------------------------------------------------------------------"
-        "---------------");
+    // if (token != "") {
+    //   print("token: " + token);
+    // }
+    // print("body: " + response.body);
+    // print("------------------------------------------------------------------"
+    //     "---------------------------------------------------------------------"
+    //     "---------------");
   }
 
   void isAuthorized() {
@@ -217,8 +215,6 @@ class APIService {
         "Content-Type": "application/json"
       },
     );
-
-    print("Liked");
 
     log(response);
 

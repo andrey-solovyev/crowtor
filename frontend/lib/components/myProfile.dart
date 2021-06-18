@@ -23,9 +23,37 @@ class _MyProfileState extends State<MyProfile> {
   List<Widget> likedTweets = [];
   List<Widget> savedTweets = [];
 
+  bool _isUserTweets = true;
+  bool _isLikedTweets = false;
+  bool _isSavedTweets = false;
+
   @override
   void initState() {
     super.initState();
+  }
+
+  void _setUserTweets() {
+    setState(() {
+      _isUserTweets = true;
+      _isLikedTweets = false;
+      _isSavedTweets = false;
+    });
+  }
+
+  void _setLikedTweets() {
+    setState(() {
+      _isUserTweets = false;
+      _isLikedTweets = true;
+      _isSavedTweets = false;
+    });
+  }
+
+  void _setSavedTweets() {
+    setState(() {
+      _isUserTweets = false;
+      _isLikedTweets = false;
+      _isSavedTweets = true;
+    });
   }
 
   @override
@@ -42,7 +70,6 @@ class _MyProfileState extends State<MyProfile> {
       isModerator = value.roles.contains("MODERATOR_ROLE");
     });
 
-
     List<Widget> tweets = [];
     return FutureBuilder<UserResponseModel>(
       future: apiService.getCurrentUser(),
@@ -50,13 +77,31 @@ class _MyProfileState extends State<MyProfile> {
         if (snapshot.hasData) {
           UserResponseModel responseModel = snapshot.data;
 
-          tweets.clear();
+          userTweets.clear();
+
+          apiService.getLikedTweets().then((value) {
+            likedTweets.clear();
+            for (int i = 0; i < value.tweets.length; i++) {
+              likedTweets.add(Tweet(
+                tweet: value.tweets[i],
+              ));
+            }
+          });
+
+          apiService.getSavedTweets().then((value) {
+            savedTweets.clear();
+            for (int i = 0; i < value.tweets.length; i++) {
+              savedTweets.add(Tweet(
+                tweet: value.tweets[i],
+              ));
+            }
+          });
 
           FeedResponseModel feedResponseModel =
               FeedResponseModel.fromJson(snapshot.data.twitts);
 
           for (int i = 0; i < feedResponseModel.tweets.length; i++) {
-            tweets.add(Tweet(
+            userTweets.add(Tweet(
               tweet: feedResponseModel.tweets[i],
             ));
           }
@@ -134,7 +179,8 @@ class _MyProfileState extends State<MyProfile> {
                             child: Text("Выйдти"),
                             onPressed: () {
                               apiService.logoutUser();
-                              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/login', (route) => false);
                             },
                             style: ElevatedButton.styleFrom(
                               primary: Colors.black,
@@ -163,7 +209,6 @@ class _MyProfileState extends State<MyProfile> {
                                 style: TextStyle(fontSize: 20),
                               ),
                             ),
-
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -187,25 +232,42 @@ class _MyProfileState extends State<MyProfile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              "Твиты",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            GestureDetector(
+                              onTap: () {
+                                _setUserTweets();
+                              },
+                              child: Text(
+                                "Твиты",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: _isUserTweets ? FontWeight.bold : FontWeight.normal),
+                              ),
                             ),
-                            Text(
-                              "Нравится",
-                              style: TextStyle(fontSize: 18),
+
+                            GestureDetector(
+                              onTap: () {
+                                _setLikedTweets();
+                              },
+                              child: Text(
+                                "Нравится",
+                                style: TextStyle(fontSize: 18, fontWeight: _isLikedTweets ? FontWeight.bold : FontWeight.normal),
+                              ),
                             ),
-                            Text(
-                              "Сохраненные",
-                              style: TextStyle(fontSize: 18),
-                            )
+
+                            GestureDetector(
+                              onTap: () {
+                                _setSavedTweets();
+                              },
+                              child: Text(
+                                "Сохраненные",
+                                style: TextStyle(fontSize: 18, fontWeight: _isSavedTweets ? FontWeight.bold : FontWeight.normal),
+                              ),
+                            ),
                           ],
                         )),
                   ],
                 ),
               ),
-              buildCurrentTweets(tweets),
+              _isUserTweets ? buildCurrentTweets(userTweets) : (_isLikedTweets ? buildCurrentTweets(likedTweets) : buildCurrentTweets(savedTweets)),
             ],
           );
         }
@@ -214,7 +276,7 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  Widget buildCurrentTweets(tweets){
+  Widget buildCurrentTweets(tweets) {
     return ListView.builder(
       shrinkWrap: true,
       physics: ScrollPhysics(),
@@ -227,5 +289,4 @@ class _MyProfileState extends State<MyProfile> {
       },
     );
   }
-
 }

@@ -190,7 +190,7 @@ class _TweetState extends State<Tweet> {
                     IconButton(
                       icon: Icon(Icons.ios_share, color: Colors.grey[700],),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddNewTweetScreen(initialText: "Ретвит:\n" + widget.tweet.textTwit + "\nАвтор:\n@" + widget.tweet.nickName + "\n",)));
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddNewTweetScreen(initialText: "ReTwit:\n" + widget.tweet.textTwit + "\nAuthor:\n@" + widget.tweet.nickName + "\n",)));
                       },
                     ),
                     IconButton(
