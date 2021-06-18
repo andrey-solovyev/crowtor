@@ -194,6 +194,50 @@ class APIService {
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
 
+  Future<FeedResponseModel> getLikedTweets() async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/getLikeTwitt");
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    print("Liked");
+
+    log(response);
+
+    // print("token: " + token);
+    // print(json.decode(response.body));
+
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<FeedResponseModel> getSavedTweets() async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/getSaveTwitt");
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+
+
+    print(response.statusCode);
+
+    log(response);
+
+    // print("token: " + token);
+    // print(json.decode(response.body));
+
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
   Future<FeedResponseModel> getTweetsForModeration() async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/moderate");
     final response = await http.post(
@@ -307,6 +351,7 @@ class APIService {
     }
   }
 
+
   Future<DisLikeResponseModel> disLikeTweet(
       DisLikeRequestModel requestModel) async {
     isAuthorized();
@@ -329,6 +374,54 @@ class APIService {
       return DisLikeResponseModel.fromJson({"message": "Удачно"});
     } else {
       return DisLikeResponseModel.fromJson({"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<LikeResponseModel> saveTweet(LikeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/twitt/saveTwitt?twittId=" +
+        requestModel.twittId.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    if (response.statusCode == 201) {
+      return LikeResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return LikeResponseModel.fromJson({"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<LikeResponseModel> deleteSavedTweet(LikeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/twitt/deleteSaveTwitt?twittId=" +
+        requestModel.twittId.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    if (response.statusCode == 201) {
+      return LikeResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return LikeResponseModel.fromJson({"message": "Что то пошло не так"});
     }
   }
 

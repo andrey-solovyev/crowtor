@@ -32,6 +32,7 @@ class TweetResponseModel {
   final int amountDisLikes;
   final bool like;
   final bool dislike;
+  final bool isSaved;
   final String created;
   final String firstName;
   final String lastName;
@@ -52,7 +53,7 @@ class TweetResponseModel {
       this.textTwit,
       this.nickName,
       this.premium,
-      this.comments});
+      this.comments, this.isSaved});
 
   factory TweetResponseModel.fromJson(Map<String, dynamic> json) {
     Set<CommentResponseModel> tweetComments = Set();
@@ -68,6 +69,7 @@ class TweetResponseModel {
       amountDisLikes:
           json['amountDisLikes'] != null ? json['amountDisLikes'] : -1,
       like: json['like'] != null ? json['like'] : false,
+      isSaved: json['isSaved'] != null ? json['isSaved'] : false,
       dislike: json['dislike'] != null ? json['dislike'] : false,
       created: json['created'] != null ? json['created'] : "",
       firstName: json['firstName'] != null ? json['firstName'] : "",

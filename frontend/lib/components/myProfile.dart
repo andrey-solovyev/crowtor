@@ -7,6 +7,8 @@ import 'package:crowtor/screens/SubsScreen.dart';
 import 'package:crowtor/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class MyProfile extends StatefulWidget {
   const MyProfile({Key key}) : super(key: key);
 
@@ -16,6 +18,10 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   UserResponseModel userResponseModel;
+  Widget currentBottomTweets;
+  List<Widget> userTweets = [];
+  List<Widget> likedTweets = [];
+  List<Widget> savedTweets = [];
 
   @override
   void initState() {
@@ -24,12 +30,14 @@ class _MyProfileState extends State<MyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Current_user_profile_screen");
     APIService apiService = new APIService();
     bool isModerator = false;
 
     apiService.getCurrentUser().then((value) {
       isModerator = value.roles.contains("MODERATOR_ROLE");
     });
+
 
     List<Widget> tweets = [];
     return FutureBuilder<UserResponseModel>(
@@ -193,17 +201,7 @@ class _MyProfileState extends State<MyProfile> {
                   ],
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount: tweets.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
-                    child: tweets[index],
-                  );
-                },
-              ),
+              buildCurrentTweets(tweets),
             ],
           );
         }
@@ -211,4 +209,19 @@ class _MyProfileState extends State<MyProfile> {
       },
     );
   }
+
+  Widget buildCurrentTweets(tweets){
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      itemCount: tweets.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+          child: tweets[index],
+        );
+      },
+    );
+  }
+
 }

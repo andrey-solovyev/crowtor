@@ -6,6 +6,8 @@ import 'package:crowtor/model/feedModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class ModerationScreen extends StatefulWidget {
   const ModerationScreen({Key key}) : super(key: key);
 
@@ -18,6 +20,7 @@ class _ModerationScreenState extends State<ModerationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Moderator_screen");
     List<Widget> tweets = [];
 
     APIService apiService = new APIService();

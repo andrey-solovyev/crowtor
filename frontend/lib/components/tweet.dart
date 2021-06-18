@@ -3,6 +3,7 @@ import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
 import 'package:crowtor/model/likeModel.dart';
 import 'package:crowtor/screens/CommentScreen.dart';
+import 'package:crowtor/screens/addNewTweet.dart';
 import 'package:crowtor/screens/profileScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,7 @@ class _TweetState extends State<Tweet> {
   int _amountDisLikes = 0;
   bool isLiked = false;
   bool isDisliked = false;
+  bool _isSaved = false;
   APIService apiService = new APIService();
 
   @override
@@ -31,6 +33,7 @@ class _TweetState extends State<Tweet> {
     _amountDisLikes = widget.tweet.amountDisLikes;
     isLiked = widget.tweet.like;
     isDisliked = widget.tweet.dislike;
+    _isSaved = widget.tweet.isSaved;
 
 
     print(widget.tweet.id.toString() + " " + widget.tweet.textTwit + " " + isLiked.toString() + " " + isDisliked.toString());
@@ -75,6 +78,20 @@ class _TweetState extends State<Tweet> {
       isDisliked = false;
     });
   }
+
+
+  void _save() {
+    setState(() {
+      _isSaved = true;
+    });
+  }
+
+  void _unSave() {
+    setState(() {
+      _isSaved = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -173,13 +190,20 @@ class _TweetState extends State<Tweet> {
                     IconButton(
                       icon: Icon(Icons.ios_share, color: Colors.grey[700],),
                       onPressed: () {
-                        print("ios_share",);
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddNewTweetScreen(initialText: "Ретвит:\n" + widget.tweet.textTwit + "\nАвтор:\n@" + widget.tweet.nickName + "\n",)));
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.bookmark, color: Colors.grey[700],),
+                      icon: Icon(Icons.bookmark, color: _isSaved ? Colors.brown : Colors.grey[700],),
                       onPressed: () {
-                        print("bookmark");
+
+                        if (_isSaved){
+                          apiService.deleteSavedTweet(LikeRequestModel(twittId: widget.tweet.id));
+                          _unSave();
+                        } else {
+                          apiService.saveTweet(LikeRequestModel(twittId: widget.tweet.id));
+                          _save();
+                        }
                       },
                     ),
                   ],

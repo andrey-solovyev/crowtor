@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     // GetMaterialApp
     return GetMaterialApp(
       title: 'Crowtor',
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/registration': (context) => RegistrationScreen(),
         '/feed': (context) => Home(),
-        '/createTweet': (context) => AddNewTweetScreen(),
+        '/createTweet': (context) => AddNewTweetScreen(initialText: "",),
       },
       navigatorObservers: [
         observer,

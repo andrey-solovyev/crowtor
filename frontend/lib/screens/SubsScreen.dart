@@ -8,6 +8,8 @@ import 'package:crowtor/model/feedModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class SubsScreen extends StatefulWidget {
   const SubsScreen({Key key, this.isSubscribers}) : super(key: key);
 
@@ -20,6 +22,9 @@ class SubsScreen extends StatefulWidget {
 class _SubsScreenState extends State<SubsScreen> {
   @override
   Widget build(BuildContext context) {
+
+    MyApp.analytics.logEvent(name: "Subs_screen");
+
     List<Widget> users = [];
 
     APIService apiService = new APIService();

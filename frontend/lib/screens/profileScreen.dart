@@ -6,6 +6,8 @@ import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class Profile extends StatefulWidget {
   const Profile({Key key, this.nickName}) : super(key: key);
 
@@ -28,6 +30,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Profile_screen");
     APIService apiService = new APIService();
 
     List<Widget> tweets = [];

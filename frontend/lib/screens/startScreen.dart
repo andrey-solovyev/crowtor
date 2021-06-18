@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
+import '../main.dart';
+
 class StartScreen extends StatefulWidget {
   StartScreen({Key key, this.text = "Добро пожаловать в наше приложение!", this.isFinalScreen = false})
       : super(key: key);
@@ -18,7 +20,7 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
 
-    FirebaseAnalytics().setCurrentScreen(screenName: 'Start');
+    MyApp.analytics.logEvent(name: "Start_screen");
 
     return Scaffold(
         appBar: AppBar(),

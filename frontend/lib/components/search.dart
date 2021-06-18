@@ -6,6 +6,7 @@ import 'package:crowtor/model/feedModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
 import 'feed.dart';
 
 class Search extends StatefulWidget {
@@ -39,6 +40,7 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Feed_screen");
     return ListView(
       children: [
         Form(
