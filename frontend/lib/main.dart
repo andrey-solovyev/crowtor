@@ -4,14 +4,23 @@ import 'package:crowtor/screens/home.dart';
 import 'package:crowtor/screens/loginScreen.dart';
 import 'package:crowtor/screens/registrationScreen.dart';
 import 'package:crowtor/screens/startScreen.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() {
+import 'package:firebase_analytics/firebase_analytics.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
+  static FirebaseAnalytics analytics = new FirebaseAnalytics();
+  static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics: analytics);
 
   static final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -34,7 +43,9 @@ class MyApp extends StatelessWidget {
         '/feed': (context) => Home(),
         '/createTweet': (context) => AddNewTweetScreen(),
       },
-      // navigatorObservers: [APIService.analyticsService.getAnalyticsObserver()],
+      navigatorObservers: [
+        observer,
+      ],
       // navigatorKey: navigatorKey,
     );
   }

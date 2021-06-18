@@ -466,6 +466,26 @@ class APIService {
     return SearchUserResponseModel.fromJson(json.decode(response.body));
   }
 
+  void metric(
+      UnSubscribeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse("https://api.appmetrica.yandex.com/logs/v1/import/events?"
+        + "post_api_key=" + "85ca055e-50d2-45a6-a98f-180462654202"
+      + "&application_id=" + "3996904"
+        + "&event_name=" + "logout"
+        + "&event_timestamp=" + DateTime.now().millisecondsSinceEpoch.toString()
+    );
+
+    final response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+  }
+
   void logoutUser(){
     token = "";
     currUserNickName = "";

@@ -117,8 +117,9 @@ class _MyProfileState extends State<MyProfile> {
                         child: ElevatedButton(
                             child: Text("Выйдти"),
                             onPressed: () {
-                              apiService.logoutUser();
-                              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                              apiService.metric(null);
+                              // apiService.logoutUser();
+                              // Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                             },
                             style: ElevatedButton.styleFrom(
                               primary: Colors.black,
