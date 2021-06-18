@@ -39,6 +39,12 @@ public class TwittController {
         if (authentication.isAuthenticated()) twittService.createTwitt(authentication.getName(), createTwittDto);
     }
 
+    @RequestMapping(method = POST, path = "/reTwitt")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reTwitt(Authentication authentication, @RequestBody CreateTwittDto createTwittDto,@RequestParam long originalTwitt) throws EntityNotFoundException {
+        if (authentication.isAuthenticated()) twittService.reTwitt(authentication.getName(), createTwittDto,originalTwitt);
+    }
+
     @RequestMapping(method = POST, path = "/like")
     @ResponseStatus(HttpStatus.CREATED)
     public void likeTwitt(Authentication authentication, @RequestParam long twittId) throws EntityNotFoundException {

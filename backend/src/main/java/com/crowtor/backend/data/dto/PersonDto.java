@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -36,5 +37,7 @@ public class PersonDto {
     private int subscribers;
 
     private Boolean isSubscriber;
+
+    private List<String> roles;
 
 }

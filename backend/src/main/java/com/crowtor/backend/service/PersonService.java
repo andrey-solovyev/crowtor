@@ -62,7 +62,6 @@ public class PersonService {
             var q = mapper.convert(p, PersonDto.class);
             if (person != null && p.getSubscribers().contains(person)) {
                 q.setIsSubscriber(true);
-
             }
             result.add(q);
         }
@@ -127,9 +126,14 @@ public class PersonService {
         if (person == null) throw new EntityNotFoundException("User not found");
         var personDto = mapper.convert(person, PersonDto.class);
         if (current!=null && current.getId() != person.getId()){
-                personDto.setTwitts(twittRepository.findAllDtoForCurrentAndAuthor(current,person.getId()));
+            personDto.setTwitts(twittRepository.findAllDtoForCurrentAndAuthor(current,person.getId()));
         } else{
             personDto.setTwitts(twittRepository.findAllTwittsFromUser(person.getId()));
+            List<String> lists = new ArrayList<>();
+            person.getRoles().stream().forEach(role -> {
+                lists.add(role.getName());
+            });
+            personDto.setRoles(lists);
         }
         if (current != null && person.getSubscribers().contains(current)) {
             personDto.setIsSubscriber(true);
@@ -144,9 +148,12 @@ public class PersonService {
         for (Person p : person.getSubscribers()) {
             var personDto = new PersonDto();
             personDto.setNickName(p.getNickName());
-            person.setFirstName(p.getFirstName());
-            person.setLastName(p.getLastName());
+            personDto.setFirstName(p.getFirstName());
+            personDto.setLastName(p.getLastName());
             personsDto.add(personDto);
+            if (person.getSubscribers().contains(p)) {
+                personDto.setIsSubscriber(true);
+            }
         }
         return personsDto;
     }
@@ -161,6 +168,7 @@ public class PersonService {
             person.setFirstName(p.getFirstName());
             person.setLastName(p.getLastName());
             personsDto.add(personDto);
+            personDto.setIsSubscriber(true);
         }
         return personsDto;
     }
