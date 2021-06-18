@@ -7,6 +7,7 @@ import 'package:crowtor/screens/addNewTweet.dart';
 import 'package:crowtor/screens/profileScreen.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
 import 'MyText.dart';
 
 class Tweet extends StatefulWidget {
@@ -153,8 +154,10 @@ class _TweetState extends State<Tweet> {
                           ),
                           onPressed: () {
                             if (isLiked) {
+                              MyApp.analytics.logEvent(name: "Unlike_twit");
                               _unLike();
                             } else {
+                              MyApp.analytics.logEvent(name: "Like_twit");
                               _like();
                             }
                           },
@@ -171,8 +174,10 @@ class _TweetState extends State<Tweet> {
                           ),
                           onPressed: () {
                             if (isDisliked) {
+                              MyApp.analytics.logEvent(name: "UnDislike_twit");
                               _unDisLike();
                             } else {
+                              MyApp.analytics.logEvent(name: "Dislike_twit");
                               _disLike();
                             }
                           },

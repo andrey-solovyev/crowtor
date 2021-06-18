@@ -80,6 +80,8 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
                           isApiCallProcess = true;
                         });
 
+                        MyApp.analytics.logEvent(name: "Send_twit");
+
                         requestModel.textTwit = textController.text;
                         APIService apiService = new APIService();
                         apiService.createTweet(requestModel).then((value) {
