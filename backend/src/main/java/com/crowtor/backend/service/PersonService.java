@@ -8,6 +8,7 @@ import com.crowtor.backend.data.dto.securutyDto.RegistPersonDto;
 import com.crowtor.backend.data.mappers.Mapper;
 import com.crowtor.backend.data.models.Person;
 import com.crowtor.backend.data.models.Role;
+import com.crowtor.backend.data.models.Twitt;
 import com.crowtor.backend.data.repository.PersonRepository;
 import com.crowtor.backend.data.repository.RoleRepository;
 import com.crowtor.backend.data.repository.TwittRepository;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PersonService {
@@ -128,7 +131,23 @@ public class PersonService {
         if (current!=null && current.getId() != person.getId()){
             personDto.setTwitts(twittRepository.findAllDtoForCurrentAndAuthor(current,person.getId()));
         } else{
-            personDto.setTwitts(twittRepository.findAllTwittsFromUser(person.getId()));
+            Set<TwittFeedDto> result = new HashSet<>();
+            for (Twitt twitt : person.getTwitts()) {
+                var twittDto = mapper.convert(twitt,TwittFeedDto.class);
+                twitt.getPersonLikes().forEach(person1 -> {
+                    if (person.getId() == person1.getId()){
+                        twittDto.setLike(true);
+                    }
+                });
+                twitt.getPersonDisLikes().forEach(person1 -> {
+                    if (person.getId() == person1.getId()){
+                        twittDto.setLike(true);
+                    }
+                });
+
+                result.add(twittDto);
+            }
+            personDto.setTwitts(result);
             List<String> lists = new ArrayList<>();
             person.getRoles().stream().forEach(role -> {
                 lists.add(role.getName());
@@ -165,8 +184,8 @@ public class PersonService {
         for (Person p : person.getSubscription()) {
             var personDto = new PersonDto();
             personDto.setNickName(p.getNickName());
-            person.setFirstName(p.getFirstName());
-            person.setLastName(p.getLastName());
+            personDto.setFirstName(p.getFirstName());
+            personDto.setLastName(p.getLastName());
             personsDto.add(personDto);
             personDto.setIsSubscriber(true);
         }
