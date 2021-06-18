@@ -25,7 +25,11 @@ class _MyProfileState extends State<MyProfile> {
   @override
   Widget build(BuildContext context) {
     APIService apiService = new APIService();
-    bool isModerator = true;
+    bool isModerator = false;
+
+    apiService.getCurrentUser().then((value) {
+      isModerator = value.roles.contains("MODERATOR_ROLE");
+    });
 
     List<Widget> tweets = [];
     return FutureBuilder<UserResponseModel>(
@@ -117,9 +121,8 @@ class _MyProfileState extends State<MyProfile> {
                         child: ElevatedButton(
                             child: Text("Выйдти"),
                             onPressed: () {
-                              apiService.metric(null);
-                              // apiService.logoutUser();
-                              // Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                              apiService.logoutUser();
+                              Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                             },
                             style: ElevatedButton.styleFrom(
                               primary: Colors.black,

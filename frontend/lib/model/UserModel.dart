@@ -38,7 +38,7 @@ class UserResponseModel {
       this.subscribers,
       this.dateRegistration,
       this.twitts,
-      this.isSubscribed});
+      this.isSubscribed, this.roles});
 
   final int id;
   final String birthday;
@@ -49,6 +49,7 @@ class UserResponseModel {
   final bool isDeleted;
   final bool isPremium;
   final bool isSubscribed;
+  final List<dynamic> roles;
 
   final int subscription;
   final int subscribers;
@@ -58,23 +59,23 @@ class UserResponseModel {
 
   factory UserResponseModel.fromJson(Map<String, dynamic> json) {
     return UserResponseModel(
-        id: json['id'] != null ? json['id'] : -1,
-        birthday: json['birthday'] != null
-            ? json['birthday']
-            : "12.12.12.12.12.12.12",
-        firstName: json['firstName'] != null ? json['firstName'] : "",
-        lastName: json['lastName'] != null ? json['lastName'] : "",
-        nickName: json['nickName'] != null ? json['nickName'] : "",
-        email: json['email'] != null ? json['email'] : "",
-        dateRegistration: json['dateRegistration'] != null
-            ? json['dateRegistration']
-            : "12.12.12.12.12.12.12",
-        subscribers: json['subscribers'] != null ? json['subscribers'] : 0,
-        subscription: json['subscription'] != null ? json['subscription'] : 0,
-        isDeleted: json['isDeleted'] != null ? json['isDeleted'] : false,
-        twitts: json['twitts'] != null ? json['twitts'] : [],
-        isPremium: json['isPremium'] != null ? json['isPremium'] : false,
-        isSubscribed: json['isSubscriber'] != null ? json['isSubscriber'] : false
+      id: json['id'] != null ? json['id'] : -1,
+      birthday:
+          json['birthday'] != null ? json['birthday'] : "12.12.12.12.12.12.12",
+      firstName: json['firstName'] != null ? json['firstName'] : "",
+      lastName: json['lastName'] != null ? json['lastName'] : "",
+      nickName: json['nickName'] != null ? json['nickName'] : "",
+      email: json['email'] != null ? json['email'] : "",
+      dateRegistration: json['dateRegistration'] != null
+          ? json['dateRegistration']
+          : "12.12.12.12.12.12.12",
+      subscribers: json['subscribers'] != null ? json['subscribers'] : 0,
+      subscription: json['subscription'] != null ? json['subscription'] : 0,
+      isDeleted: json['isDeleted'] != null ? json['isDeleted'] : false,
+      twitts: json['twitts'] != null ? json['twitts'] : [],
+      roles: json['roles'] != null ? json['roles'] : [],
+      isPremium: json['isPremium'] != null ? json['isPremium'] : false,
+      isSubscribed: json['isSubscriber'] != null ? json['isSubscriber'] : false,
     );
   }
 }
