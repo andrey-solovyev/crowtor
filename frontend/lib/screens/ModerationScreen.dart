@@ -24,7 +24,7 @@ class _ModerationScreenState extends State<ModerationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crowtor"),
+        title: Text("Crowtor Moderation"),
       ),
       body: FutureBuilder<FeedResponseModel>(
         future: apiService.getTweetsForModeration(),

@@ -1,4 +1,5 @@
 import 'package:crowtor/api/apiService.dart';
+import 'package:crowtor/model/DeleteTweetModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/TweetModerationModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
@@ -238,7 +239,7 @@ class _TweetForModerationState extends State<TweetForModeration> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: SizedBox(
                     child: isAllowed
                         ? ElevatedButton(
@@ -272,21 +273,28 @@ class _TweetForModerationState extends State<TweetForModeration> {
                                   "одобрен " + value.message,
                                 );
                               });
-                              // apiService
-                              //     .subscribe(SubscribeRequestModel(
-                              //     subscribeUser:
-                              //     widget.user.id))
-                              //     .then((value) {
-                              //
-                              //
-                              //
-                              //   Get.snackbar(
-                              //     "Твит",
-                              //     "одобрен",
-                              //   );
-                              // });
                             },
                           ),
+                    width: MediaQuery.of(context).size.width * 0.87,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                  child: SizedBox(
+                    child: ElevatedButton(
+                      child: Text("Удалить"),
+                      onPressed: () {
+                        apiService
+                            .deleteTweet(DeleteTweetRequestModel(
+                            twittId: widget.tweet.id))
+                            .then((value) {
+                          Get.snackbar(
+                            "Твит",
+                            "удален " + value.message,
+                          );
+                        });
+                      },
+                    ),
                     width: MediaQuery.of(context).size.width * 0.87,
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crowtor/components/MySnackBar.dart';
 import 'package:crowtor/main.dart';
 import 'package:crowtor/model/CommentModel.dart';
+import 'package:crowtor/model/DeleteTweetModel.dart';
 import 'package:crowtor/model/SearchUserModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
 import 'package:crowtor/model/TweetModerationModel.dart';
@@ -193,9 +194,6 @@ class APIService {
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
 
-
-
-
   Future<FeedResponseModel> getTweetsForModeration() async {
     Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/moderate");
     final response = await http.post(
@@ -216,13 +214,14 @@ class APIService {
       TweetModerationRequestModel requestModel) async {
 
     isAuthorized();
-    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/disAccessTwitt");
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/disAccessTwitt?twittId=" +
+        requestModel.twittId.toString());
     final response = await http.post(uri,
         headers: {
           'Authorization': 'Bearer $token',
           "Content-Type": "application/json"
         },
-        body: jsonEncode(requestModel.toJson()));
+        );
     log(response);
 
     if (response.statusCode == 200) {
@@ -237,19 +236,43 @@ class APIService {
       TweetModerationRequestModel requestModel) async {
 
     isAuthorized();
-    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/accessTwitt");
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/accessTwitt?twittId=" +
+        requestModel.twittId.toString());
     final response = await http.post(uri,
         headers: {
           'Authorization': 'Bearer $token',
           "Content-Type": "application/json"
         },
-        body: jsonEncode(requestModel.toJson()));
+    );
     log(response);
 
     if (response.statusCode == 200) {
       return TweetModerationResponseModel.fromJson({"message": "Удачно"});
     } else {
       return TweetModerationResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<DeleteTweetResponseModel> deleteTweet(
+      DeleteTweetRequestModel requestModel) async {
+
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/delete?twittId=" +
+        requestModel.twittId.toString());
+    final response = await http.delete(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        });
+
+    log(response);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return DeleteTweetResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return DeleteTweetResponseModel.fromJson(
           {"message": "Что то пошло не так"});
     }
   }

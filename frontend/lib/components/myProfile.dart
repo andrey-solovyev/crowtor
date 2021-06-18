@@ -3,6 +3,7 @@ import 'package:crowtor/components/tweet.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/feedModel.dart';
 import 'package:crowtor/screens/ModerationScreen.dart';
+import 'package:crowtor/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 
 class MyProfile extends StatefulWidget {
@@ -92,7 +93,7 @@ class _MyProfileState extends State<MyProfile> {
                           ],
                         )),
                     isModerator ? Padding(
-                      padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: SizedBox(
                         child: ElevatedButton(
                           child: Text("Модерация"),
@@ -105,7 +106,22 @@ class _MyProfileState extends State<MyProfile> {
                       ),
                     ) : Container(),
                     Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: SizedBox(
+                        child: ElevatedButton(
+                          child: Text("Выйдти"),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
+                          },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.black,
+                            )
+                        ),
+                        width: double.infinity,
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
