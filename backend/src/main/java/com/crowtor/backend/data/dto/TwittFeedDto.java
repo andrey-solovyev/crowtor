@@ -25,10 +25,11 @@ public class TwittFeedDto {
     private String lastName;
     private boolean isLike;
     private boolean isDislike;
+    private long originalTwitt;
     private Set<Tag> tags;
     private Set<CommentFeedDto> commentSet;
 
-    public TwittFeedDto(Long id, String textTwit, boolean isPremium, int amountLikes, int amountDisLikes, LocalDateTime created, String nickName, String firstName, String lastName) {
+    public TwittFeedDto(Long id, String textTwit, boolean isPremium, int amountLikes, int amountDisLikes, LocalDateTime created, String nickName, String firstName, String lastName, long originalTwitt) {
         this.id = id;
         this.textTwit = textTwit;
         this.isPremium = isPremium;
@@ -38,9 +39,10 @@ public class TwittFeedDto {
         this.nickName = nickName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.originalTwitt = originalTwitt;
     }
 
-    public TwittFeedDto(Long id, String textTwit, boolean isPremium, int amountLikes, int amountDisLikes, LocalDateTime created, String nickName, String firstName, String lastName, boolean isLike, boolean isDislike) {
+    public TwittFeedDto(Long id, String textTwit, boolean isPremium, int amountLikes, int amountDisLikes, LocalDateTime created, String nickName, String firstName, String lastName, boolean isLike, boolean isDislike,long originalTwitt) {
         this.id = id;
         this.textTwit = textTwit;
         this.isPremium = isPremium;
@@ -52,6 +54,7 @@ public class TwittFeedDto {
         this.lastName = lastName;
         this.isLike = isLike;
         this.isDislike = isDislike;
+        this.originalTwitt = originalTwitt;
     }
 
 }
