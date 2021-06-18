@@ -22,21 +22,28 @@ class _SearchState extends State<Search> {
   List<Widget> tweets = [];
   List<Widget> users = [];
 
+  bool isSearched = false;
+
   bool userSearch = true;
   String searchText = "";
 
-  void _setSearch(newUserSearch){
+  void _setFirstSearch() {
+    setState(() {
+      isSearched = true;
+    });
+  }
+
+  void _setSearch(newUserSearch) {
     setState(() {
       userSearch = newUserSearch;
     });
   }
 
-  void _searchText(newSearchText){
+  void _searchText(newSearchText) {
     setState(() {
       searchText = newSearchText;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +71,6 @@ class _SearchState extends State<Search> {
                 ),
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 12),
               ),
-
               Padding(
                 child: SizedBox(
                     width: double.infinity,
@@ -72,19 +78,20 @@ class _SearchState extends State<Search> {
                       child: Text("Найти твит"),
                       onPressed: () {
                         _setSearch(false);
+                        _setFirstSearch();
                         _searchText(textController.text);
                       },
                       style: ElevatedButton.styleFrom(),
                     )),
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
               ),
-
               Padding(
                 child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       child: Text("Найти пользователя"),
                       onPressed: () {
+                        _setFirstSearch();
                         _setSearch(true);
                         _searchText(textController.text);
                       },
@@ -95,13 +102,9 @@ class _SearchState extends State<Search> {
             ],
           ),
         ),
-        userSearch ? buildUsers(context, searchText) : buildTweets(context),
+        isSearched ? (userSearch ? buildUsers(context, searchText) : buildTweets(context, searchText)) : Text(""),
       ],
     );
-    //     }
-    //     return Center(child: CircularProgressIndicator());
-    //   },
-    // );
   }
 
   Widget buildUsers(BuildContext context, String nickname) {
@@ -115,39 +118,40 @@ class _SearchState extends State<Search> {
 
           users.clear();
 
-          for (int i = 0; i < responseModel.users.length; i++){
+          for (int i = 0; i < responseModel.users.length; i++) {
             users.add(UserMini(user: responseModel.users[i]));
           }
-
 
           return ListView.builder(
             shrinkWrap: true,
             physics: ScrollPhysics(),
             itemCount: users.length,
             itemBuilder: (context, index) {
-              return Padding(padding: EdgeInsets.fromLTRB(0, 12, 0, 0), child: users[index],);
+              return Padding(
+                padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+                child: users[index],
+              );
             },
           );
         }
         return Center(child: CircularProgressIndicator());
       },
     );
-
   }
 
-  Widget buildTweets(BuildContext context) {
+  Widget buildTweets(BuildContext context, String text) {
     // return Text("Tweets");
     return FutureBuilder<FeedResponseModel>(
-      future: apiService.getAllTweets(),
+      future: apiService.searchTweets(text),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
           tweets.clear();
 
-
           FeedResponseModel responseModel = snapshot.data;
-          for (int i = 0; i < responseModel.tweets.length; i++){
-            tweets.add(Tweet(tweet: responseModel.tweets[i],));
+          for (int i = 0; i < responseModel.tweets.length; i++) {
+            tweets.add(Tweet(
+              tweet: responseModel.tweets[i],
+            ));
           }
 
           print(responseModel.tweets.length);
@@ -158,7 +162,10 @@ class _SearchState extends State<Search> {
             physics: ScrollPhysics(),
             itemCount: tweets.length,
             itemBuilder: (context, index) {
-              return Padding(padding: EdgeInsets.fromLTRB(0, 12, 0, 0), child: tweets[index],);
+              return Padding(
+                padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+                child: tweets[index],
+              );
             },
           );
         }

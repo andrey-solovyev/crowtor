@@ -38,6 +38,10 @@ class _MyProfileState extends State<MyProfile> {
       isModerator = value.roles.contains("MODERATOR_ROLE");
     });
 
+    apiService.getCurrentUser().then((value) {
+      isModerator = value.roles.contains("MODERATOR_ROLE");
+    });
+
 
     List<Widget> tweets = [];
     return FutureBuilder<UserResponseModel>(

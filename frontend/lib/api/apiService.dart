@@ -188,8 +188,21 @@ class APIService {
 
     log(response);
 
-    // print("token: " + token);
-    // print(json.decode(response.body));
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<FeedResponseModel> searchTweets(String text) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/searchTwittsByText?text=" + text);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
 
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
