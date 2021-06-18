@@ -32,6 +32,12 @@ class _UserMiniState extends State<UserMini> {
       _isSubscribed = isSub;
     });
   }
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  // }
 
   @override
   Widget build(BuildContext context) {

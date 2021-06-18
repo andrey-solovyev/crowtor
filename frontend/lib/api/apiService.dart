@@ -5,6 +5,7 @@ import 'package:crowtor/main.dart';
 import 'package:crowtor/model/CommentModel.dart';
 import 'package:crowtor/model/SearchUserModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
+import 'package:crowtor/model/TweetModerationModel.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
 import 'package:crowtor/model/feedModel.dart';
@@ -15,6 +16,7 @@ import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:crowtor/screens/loginScreen.dart';
 import 'package:crowtor/screens/startScreen.dart';
+import 'package:crowtor/services/AnalyticsService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +26,7 @@ import 'package:http/http.dart' as http;
 class APIService {
   static String token = "";
   static String currUserNickName;
+  // static AnalyticsService analyticsService = new AnalyticsService();
 
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
@@ -189,6 +192,73 @@ class APIService {
 
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
+
+
+
+
+  Future<FeedResponseModel> getTweetsForModeration() async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/moderate");
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    print(response.statusCode);
+    log(response);
+
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<TweetModerationResponseModel> disAllowTweet(
+      TweetModerationRequestModel requestModel) async {
+
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/disAccessTwitt");
+    final response = await http.post(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(requestModel.toJson()));
+    log(response);
+
+    if (response.statusCode == 200) {
+      return TweetModerationResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return TweetModerationResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<TweetModerationResponseModel> allowTweet(
+      TweetModerationRequestModel requestModel) async {
+
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/accessTwitt");
+    final response = await http.post(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(requestModel.toJson()));
+    log(response);
+
+    if (response.statusCode == 200) {
+      return TweetModerationResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return TweetModerationResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
+    }
+  }
+
+
+
+
+
+
 
   Future<LikeResponseModel> likeTweet(LikeRequestModel requestModel) async {
     isAuthorized();

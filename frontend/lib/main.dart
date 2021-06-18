@@ -1,3 +1,4 @@
+import 'package:crowtor/api/apiService.dart';
 import 'package:crowtor/screens/addNewTweet.dart';
 import 'package:crowtor/screens/home.dart';
 import 'package:crowtor/screens/loginScreen.dart';
@@ -27,12 +28,13 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        '/': (context) => MyHomePage(title: 'Crowtor'),
+        '/': (context) => StartScreen(),
         '/login': (context) => LoginScreen(),
         '/registration': (context) => RegistrationScreen(),
         '/feed': (context) => Home(),
         '/createTweet': (context) => AddNewTweetScreen(),
       },
+      // navigatorObservers: [APIService.analyticsService.getAnalyticsObserver()],
       // navigatorKey: navigatorKey,
     );
   }
