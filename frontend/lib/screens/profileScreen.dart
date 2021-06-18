@@ -3,7 +3,10 @@ import 'package:crowtor/components/tweet.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/feedModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
+import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:flutter/material.dart';
+
+import '../main.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key key, this.nickName}) : super(key: key);
@@ -15,11 +18,27 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool _isSubscribed = false;
+  bool _isChanged = false;
+
+  void _changeSub(isSub) {
+    setState(() {
+      _isChanged = true;
+      _isSubscribed = isSub;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Profile_screen");
     APIService apiService = new APIService();
 
     List<Widget> tweets = [];
+
+    apiService
+        .getUserByNickName(
+            UserRequestModelByNickName(nickName: widget.nickName))
+        .then((value) => _isSubscribed = value.isSubscribed);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,22 +92,44 @@ class _ProfileState extends State<Profile> {
                               )
                             ],
                           )),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
-                        child: SizedBox(
-                          child: ElevatedButton(
-                            child: Text("Подписаться"),
-                            onPressed: () {
-                              apiService.subscribe(SubscribeRequestModel(subscribeUser: responseModel.id)).then((value){
-                                print("responseModel.id = " + responseModel.id.toString());
-                                  print(value);
-                              });
-                                  print("ПОДПИСАТЬСЯЯЯЯЯ");
-                            },
-                          ),
-                          width: double.infinity,
-                        ),
-                      ),
+                      _isSubscribed
+                          ? Padding(
+                              padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                              child: SizedBox(
+                                child: ElevatedButton(
+                                  child: Text("Отписаться"),
+                                  onPressed: () {
+                                    apiService
+                                        .unSubscribe(UnSubscribeRequestModel(
+                                            subscribeUser: responseModel.id))
+                                        .then((value) {
+                                      _changeSub(false);
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.purple,
+                                  ),
+                                ),
+                                width: double.infinity,
+                              ),
+                            )
+                          : Padding(
+                              padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                              child: SizedBox(
+                                child: ElevatedButton(
+                                  child: Text("Подписаться"),
+                                  onPressed: () {
+                                    apiService
+                                        .subscribe(SubscribeRequestModel(
+                                            subscribeUser: responseModel.id))
+                                        .then((value) {
+                                      _changeSub(true);
+                                    });
+                                  },
+                                ),
+                                width: double.infinity,
+                              ),
+                            ),
                       Padding(
                           padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
                           child: Row(

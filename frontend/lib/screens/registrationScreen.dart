@@ -4,6 +4,8 @@ import 'package:crowtor/model/registrationModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../main.dart';
+
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key key}) : super(key: key);
   @override
@@ -55,6 +57,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Registration_screen");
     return ProgressHUD(child: _uiSetup(context), inAsyncCall: isApiCallProcess);
   }
 

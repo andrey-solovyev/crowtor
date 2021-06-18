@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:crowtor/components/MySnackBar.dart';
 import 'package:crowtor/main.dart';
 import 'package:crowtor/model/CommentModel.dart';
+import 'package:crowtor/model/DeleteTweetModel.dart';
 import 'package:crowtor/model/SearchUserModel.dart';
 import 'package:crowtor/model/TweetModel.dart';
+import 'package:crowtor/model/TweetModerationModel.dart';
 import 'package:crowtor/model/UserModel.dart';
 import 'package:crowtor/model/disLikeModel.dart';
 import 'package:crowtor/model/feedModel.dart';
@@ -14,7 +16,6 @@ import 'package:crowtor/model/registrationModel.dart';
 import 'package:crowtor/model/subscribeModel.dart';
 import 'package:crowtor/model/unSubscribeModel.dart';
 import 'package:crowtor/screens/loginScreen.dart';
-import 'package:crowtor/screens/startScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,18 +25,19 @@ import 'package:http/http.dart' as http;
 class APIService {
   static String token = "";
   static String currUserNickName;
+  // static AnalyticsService analyticsService = new AnalyticsService();
 
   final String serverUrl = "https://crowtor.herokuapp.com/api";
   final String apiVersion = "/v1";
 
   void log(response) {
-    if (token != "") {
-      print("token: " + token);
-    }
-    print("body: " + response.body);
-    print("------------------------------------------------------------------"
-        "---------------------------------------------------------------------"
-        "---------------");
+    // if (token != "") {
+    //   print("token: " + token);
+    // }
+    // print("body: " + response.body);
+    // print("------------------------------------------------------------------"
+    //     "---------------------------------------------------------------------"
+    //     "---------------");
   }
 
   void isAuthorized() {
@@ -184,11 +186,155 @@ class APIService {
 
     log(response);
 
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<FeedResponseModel> searchTweets(String text) async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/searchTwittsByText?text=" + text);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<FeedResponseModel> getLikedTweets() async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/getLikeTwitt");
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
     // print("token: " + token);
     // print(json.decode(response.body));
 
     return FeedResponseModel.fromJson(json.decode(response.body));
   }
+
+  Future<FeedResponseModel> getSavedTweets() async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/getSaveTwitt");
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+
+
+    print(response.statusCode);
+
+    log(response);
+
+    // print("token: " + token);
+    // print(json.decode(response.body));
+
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<FeedResponseModel> getTweetsForModeration() async {
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/moderate");
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    print(response.statusCode);
+    log(response);
+
+    return FeedResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<TweetModerationResponseModel> disAllowTweet(
+      TweetModerationRequestModel requestModel) async {
+
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/disAccessTwitt?twittId=" +
+        requestModel.twittId.toString());
+    final response = await http.post(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+        );
+    log(response);
+
+    if (response.statusCode == 200) {
+      return TweetModerationResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return TweetModerationResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<TweetModerationResponseModel> allowTweet(
+      TweetModerationRequestModel requestModel) async {
+
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/accessTwitt?twittId=" +
+        requestModel.twittId.toString());
+    final response = await http.post(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+    );
+    log(response);
+
+    if (response.statusCode == 200) {
+      return TweetModerationResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return TweetModerationResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<DeleteTweetResponseModel> deleteTweet(
+      DeleteTweetRequestModel requestModel) async {
+
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl + apiVersion + "/twitt/delete?twittId=" +
+        requestModel.twittId.toString());
+    final response = await http.delete(uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        });
+
+    log(response);
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return DeleteTweetResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return DeleteTweetResponseModel.fromJson(
+          {"message": "Что то пошло не так"});
+    }
+  }
+
+
+
+
+
+
 
   Future<LikeResponseModel> likeTweet(LikeRequestModel requestModel) async {
     isAuthorized();
@@ -214,6 +360,7 @@ class APIService {
     }
   }
 
+
   Future<DisLikeResponseModel> disLikeTweet(
       DisLikeRequestModel requestModel) async {
     isAuthorized();
@@ -236,6 +383,54 @@ class APIService {
       return DisLikeResponseModel.fromJson({"message": "Удачно"});
     } else {
       return DisLikeResponseModel.fromJson({"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<LikeResponseModel> saveTweet(LikeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/twitt/saveTwitt?twittId=" +
+        requestModel.twittId.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    if (response.statusCode == 201) {
+      return LikeResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return LikeResponseModel.fromJson({"message": "Что то пошло не так"});
+    }
+  }
+
+  Future<LikeResponseModel> deleteSavedTweet(LikeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/twitt/deleteSaveTwitt?twittId=" +
+        requestModel.twittId.toString());
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    if (response.statusCode == 201) {
+      return LikeResponseModel.fromJson({"message": "Удачно"});
+    } else {
+      return LikeResponseModel.fromJson({"message": "Что то пошло не так"});
     }
   }
 
@@ -331,5 +526,70 @@ class APIService {
     log(response);
 
     return SearchUserResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<SearchUserResponseModel> getSubscribers(
+      SearchUserRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/getSubscribe?nickName=" +
+        requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return SearchUserResponseModel.fromJson(json.decode(response.body));
+  }
+
+  Future<SearchUserResponseModel> getSubscriptions(
+      SearchUserRequestModel requestModel) async {
+    Uri uri = Uri.parse(serverUrl +
+        apiVersion +
+        "/person/getSubscription?nickName=" +
+        requestModel.nickName);
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+
+    return SearchUserResponseModel.fromJson(json.decode(response.body));
+  }
+
+  void metric(
+      UnSubscribeRequestModel requestModel) async {
+    isAuthorized();
+    Uri uri = Uri.parse("https://api.appmetrica.yandex.com/logs/v1/import/events?"
+        + "post_api_key=" + "85ca055e-50d2-45a6-a98f-180462654202"
+      + "&application_id=" + "3996904"
+        + "&event_name=" + "logout"
+        + "&event_timestamp=" + DateTime.now().millisecondsSinceEpoch.toString()
+    );
+
+    final response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json"
+      },
+    );
+
+    log(response);
+  }
+
+  void logoutUser(){
+    token = "";
+    currUserNickName = "";
   }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "225810191278",
+    "project_id": "crowtor",
+    "storage_bucket": "crowtor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225810191278:android:06bd222bdd82c91115ee3f",
+        "android_client_info": {
+          "package_name": "com.crowtor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225810191278-ka4vt523d50r8po9cibq1kiug7sn7bah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuIbpF6d_69Mitbfd7iJPd11_Dz5HQmm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225810191278-ka4vt523d50r8po9cibq1kiug7sn7bah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

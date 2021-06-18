@@ -11,6 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../main.dart';
+
 class CommentScreen extends StatefulWidget {
 
   final TweetResponseModel tweet;
@@ -30,6 +32,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Comment_screen");
     return ProgressHUD(child: _uiSetup(context), inAsyncCall: isApiCallProcess);
   }
 

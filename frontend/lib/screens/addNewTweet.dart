@@ -6,7 +6,14 @@ import 'package:crowtor/model/TweetModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class AddNewTweetScreen extends StatefulWidget {
+
+  AddNewTweetScreen({this.initialText});
+
+  final String initialText;
+
   @override
   _AddNewTweetScreenState createState() => _AddNewTweetScreenState();
 }
@@ -19,6 +26,10 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.analytics.logEvent(name: "Add_new_tweet_screen");
+
+
+
     return ProgressHUD(child: _uiSetup(context), inAsyncCall: isApiCallProcess);
   }
 
@@ -37,7 +48,8 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
           children: [
             Padding(
               child: TextFormField(
-                controller: textController,
+                // initialValue: "qweqwe",
+                controller: textController..text = widget.initialText,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
                 minLines: 12,
@@ -67,6 +79,8 @@ class _AddNewTweetScreenState extends State<AddNewTweetScreen> {
                         setState(() {
                           isApiCallProcess = true;
                         });
+
+                        MyApp.analytics.logEvent(name: "Send_twit");
 
                         requestModel.textTwit = textController.text;
                         APIService apiService = new APIService();
