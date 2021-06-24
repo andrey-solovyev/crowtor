@@ -37,4 +37,4 @@ https://miro.com/app/board/o9J_lP41t_g=/
 
 [Дополнительные материалы](https://drive.google.com/drive/folders/1vsyGI4dt1mdbaKnGzNLzPDSI9kQGwiTj)
 
-
+[Система рекомендаций](https://github.com/andrey-solovyev/recommend)
